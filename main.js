@@ -1,4 +1,3 @@
-// main.js - Portfolio Website
 // main.js - Portfolio Website with Firebase
 
 // ======================
@@ -48,225 +47,6 @@ async function initializeFirebase() {
   }
 }
 
-// ======================
-// REST OF YOUR MAIN.JS
-// ======================
-// [Keep all your existing main.js code here...]
-
-// Then add these Firebase functions at the bottom:
-
-// Load piano videos from Firebase
-async function loadPianoVideos() {
-  const container = document.getElementById('pianoVideosContainer');
-  if (!container) return;
-
-  // Show loading state
-  container.innerHTML = `
-    <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>Loading piano performances...</p>
-    </div>
-  `;
-
-  try {
-    const firebase = await initializeFirebase();
-    if (!firebase) {
-      throw new Error('Failed to initialize Firebase');
-    }
-
-    const { db, getDocs, collection, query, orderBy } = firebase;
-    const q = query(collection(db, "pianoVideos"), orderBy("timestamp", "desc"));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      container.innerHTML = `
-        <div class="no-content">
-          <i class="fas fa-music"></i>
-          <h3>No Performances Yet</h3>
-          <p>Check back soon for piano performances!</p>
-        </div>
-      `;
-      return;
-    }
-
-    let videosHTML = '';
-    querySnapshot.forEach((doc) => {
-      const video = doc.data();
-      const youtubeId = video.youtubeId || '';
-      
-      if (youtubeId) {
-        videosHTML += `
-          <div class="video-card">
-            <div class="video-player">
-              <iframe 
-                src="https://www.youtube.com/embed/${youtubeId}" 
-                frameborder="0" 
-                allowfullscreen
-                loading="lazy"
-              ></iframe>
-            </div>
-            <div class="video-info">
-              <h3>${video.pieceName || 'Untitled Piece'}</h3>
-              <div class="video-meta">
-                <span><i class="fas fa-user"></i> ${video.playedBy || 'Unknown'}</span>
-                <span><i class="fas fa-music"></i> ${video.composer || 'Unknown'}</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-    });
-
-    container.innerHTML = videosHTML || `
-      <div class="no-content">
-        <i class="fas fa-exclamation-circle"></i>
-        <h3>No Videos Available</h3>
-        <p>Check back later for updates.</p>
-      </div>
-    `;
-
-  } catch (error) {
-    console.error('Error loading piano videos:', error);
-    container.innerHTML = `
-      <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Failed to Load Content</h3>
-        <p>Please check your connection and try again.</p>
-        <button onclick="loadPianoVideos()" class="btn btn-secondary">
-          <i class="fas fa-redo"></i> Retry
-        </button>
-      </div>
-    `;
-  }
-}
-
-// Load blogs from Firebase
-async function loadBlogs() {
-  const container = document.getElementById('blogsList');
-  if (!container) return;
-
-  // Show loading state
-  container.innerHTML = `
-    <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>Loading blog posts...</p>
-    </div>
-  `;
-
-  try {
-    const firebase = await initializeFirebase();
-    if (!firebase) {
-      throw new Error('Failed to initialize Firebase');
-    }
-
-    const { db, getDocs, collection, query, orderBy } = firebase;
-    const q = query(collection(db, "blogs"), orderBy("timestamp", "desc"));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      container.innerHTML = `
-        <div class="no-content">
-          <i class="fas fa-blog"></i>
-          <h3>No Blog Posts Yet</h3>
-          <p>Check back soon for new blog posts!</p>
-        </div>
-      `;
-      return;
-    }
-
-    let blogsHTML = '';
-    querySnapshot.forEach((doc) => {
-      const blog = doc.data();
-      const date = blog.timestamp?.toDate?.() || new Date();
-      
-      blogsHTML += `
-        <div class="content-card blog-card">
-          <div class="blog-content">
-            <div class="blog-meta">
-              <span class="blog-category">${blog.category || 'General'}</span>
-              <span class="blog-date">${date.toLocaleDateString()}</span>
-            </div>
-            <h3 class="blog-title">${blog.title || 'Untitled Post'}</h3>
-            <p class="blog-excerpt">${blog.excerpt || 'No excerpt available.'}</p>
-            <button class="read-more-btn" onclick="viewBlog('${doc.id}')">
-              Read More <i class="fas fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      `;
-    });
-
-    container.innerHTML = blogsHTML;
-
-  } catch (error) {
-    console.error('Error loading blogs:', error);
-    container.innerHTML = `
-      <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Failed to Load Blogs</h3>
-        <p>Please check your connection and try again.</p>
-        <button onclick="loadBlogs()" class="btn btn-secondary">
-          <i class="fas fa-redo"></i> Retry
-        </button>
-      </div>
-    `;
-  }
-}
-
-// View blog details from Firebase
-async function viewBlog(blogId) {
-  try {
-    const firebase = await initializeFirebase();
-    if (!firebase) {
-      showErrorToast('Cannot connect to database. Please try again later.');
-      return;
-    }
-
-    const { db, doc, getDoc } = firebase;
-    const docSnap = await getDoc(doc(db, "blogs", blogId));
-
-    if (docSnap.exists()) {
-      const blog = docSnap.data();
-      window.showBlogModal(blog);
-    } else {
-      showErrorToast('Blog post not found!');
-    }
-  } catch (error) {
-    console.error('Error loading blog:', error);
-    showErrorToast('Error loading blog post. Please try again.');
-  }
-}
-
-// Helper function to show error messages
-function showErrorToast(message) {
-  // Create toast notification
-  const toast = document.createElement('div');
-  toast.className = 'error-toast';
-  toast.innerHTML = `
-    <i class="fas fa-exclamation-circle"></i>
-    <span>${message}</span>
-  `;
-  
-  document.body.appendChild(toast);
-  
-  // Show toast
-  setTimeout(() => toast.classList.add('show'), 10);
-  
-  // Remove after 5 seconds
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }, 5000);
-}
-
-// Make functions globally available
-window.loadPianoVideos = loadPianoVideos;
-window.loadBlogs = loadBlogs;
-window.viewBlog = viewBlog;
 // Initialize sound preferences
 const soundManager = {
   enabled: localStorage.getItem('soundEnabled') !== 'false',
@@ -360,6 +140,14 @@ function setupNavigation() {
         link.classList.add('active');
       }
     });
+    
+    // Close mobile menu if open
+    const nav = document.querySelector('.nav');
+    const menuToggle = document.getElementById('menuToggle');
+    if (nav && menuToggle) {
+      nav.classList.remove('active');
+      menuToggle.querySelector('i').className = 'fas fa-bars';
+    }
   }
 
   // Set up navigation links
@@ -733,27 +521,6 @@ function formatBlogDate(timestamp) {
   return 'Recently';
 }
 
-// View blog details
-async function viewBlog(blogId) {
-  try {
-    const firebase = await initializeFirebase();
-    if (!firebase) return;
-
-    const { db, doc, getDoc } = firebase;
-    const docSnap = await getDoc(doc(db, "blogs", blogId));
-
-    if (docSnap.exists()) {
-      const blog = docSnap.data();
-      window.showBlogModal(blog);
-    } else {
-      alert('Blog post not found!');
-    }
-  } catch (error) {
-    console.error('Error loading blog:', error);
-    alert('Error loading blog post. Please try again.');
-  }
-}
-
 // Text typing animation
 function animateGreetingText() {
   const greeting = document.querySelector('.greeting');
@@ -817,6 +584,218 @@ function setupScrollProgress() {
   });
 }
 
+// Helper function to show error messages
+function showErrorToast(message) {
+  // Create toast notification
+  const toast = document.createElement('div');
+  toast.className = 'error-toast';
+  toast.innerHTML = `
+    <i class="fas fa-exclamation-circle"></i>
+    <span>${message}</span>
+  `;
+  
+  document.body.appendChild(toast);
+  
+  // Show toast
+  setTimeout(() => toast.classList.add('show'), 10);
+  
+  // Remove after 5 seconds
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 300);
+  }, 5000);
+}
+
+// ===========================
+// FIREBASE FUNCTIONS
+// ===========================
+
+// Load piano videos from Firebase
+async function loadPianoVideos() {
+  const container = document.getElementById('pianoVideosContainer');
+  if (!container) return;
+
+  // Show loading state
+  container.innerHTML = `
+    <div class="loading-state">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading piano performances...</p>
+    </div>
+  `;
+
+  try {
+    const firebase = await initializeFirebase();
+    if (!firebase) {
+      throw new Error('Failed to initialize Firebase');
+    }
+
+    const { db, getDocs, collection, query, orderBy } = firebase;
+    const q = query(collection(db, "pianoVideos"), orderBy("timestamp", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      container.innerHTML = `
+        <div class="no-content">
+          <i class="fas fa-music"></i>
+          <h3>No Performances Yet</h3>
+          <p>Check back soon for piano performances!</p>
+        </div>
+      `;
+      return;
+    }
+
+    let videosHTML = '';
+    querySnapshot.forEach((doc) => {
+      const video = doc.data();
+      const youtubeId = video.youtubeId || '';
+      
+      if (youtubeId) {
+        videosHTML += `
+          <div class="video-card">
+            <div class="video-player">
+              <iframe 
+                src="https://www.youtube.com/embed/${youtubeId}" 
+                frameborder="0" 
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+            <div class="video-info">
+              <h3>${video.pieceName || 'Untitled Piece'}</h3>
+              <div class="video-meta">
+                <span><i class="fas fa-user"></i> ${video.playedBy || 'Unknown'}</span>
+                <span><i class="fas fa-music"></i> ${video.composer || 'Unknown'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    container.innerHTML = videosHTML || `
+      <div class="no-content">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>No Videos Available</h3>
+        <p>Check back later for updates.</p>
+      </div>
+    `;
+
+  } catch (error) {
+    console.error('Error loading piano videos:', error);
+    container.innerHTML = `
+      <div class="error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Failed to Load Content</h3>
+        <p>Please check your connection and try again.</p>
+        <button onclick="loadPianoVideos()" class="btn btn-secondary">
+          <i class="fas fa-redo"></i> Retry
+        </button>
+      </div>
+    `;
+  }
+}
+
+// Load blogs from Firebase
+async function loadBlogs() {
+  const container = document.getElementById('blogsList');
+  if (!container) return;
+
+  // Show loading state
+  container.innerHTML = `
+    <div class="loading-state">
+      <i class="fas fa-spinner fa-spin"></i>
+      <p>Loading blog posts...</p>
+    </div>
+  `;
+
+  try {
+    const firebase = await initializeFirebase();
+    if (!firebase) {
+      throw new Error('Failed to initialize Firebase');
+    }
+
+    const { db, getDocs, collection, query, orderBy } = firebase;
+    const q = query(collection(db, "blogs"), orderBy("timestamp", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      container.innerHTML = `
+        <div class="no-content">
+          <i class="fas fa-blog"></i>
+          <h3>No Blog Posts Yet</h3>
+          <p>Check back soon for new blog posts!</p>
+        </div>
+      `;
+      return;
+    }
+
+    let blogsHTML = '';
+    querySnapshot.forEach((doc) => {
+      const blog = doc.data();
+      const date = blog.timestamp?.toDate?.() || new Date();
+      
+      blogsHTML += `
+        <div class="content-card blog-card">
+          <div class="blog-content">
+            <div class="blog-meta">
+              <span class="blog-category">${blog.category || 'General'}</span>
+              <span class="blog-date">${date.toLocaleDateString()}</span>
+            </div>
+            <h3 class="blog-title">${blog.title || 'Untitled Post'}</h3>
+            <p class="blog-excerpt">${blog.excerpt || 'No excerpt available.'}</p>
+            <button class="read-more-btn" onclick="viewBlog('${doc.id}')">
+              Read More <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = blogsHTML;
+
+  } catch (error) {
+    console.error('Error loading blogs:', error);
+    container.innerHTML = `
+      <div class="error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Failed to Load Blogs</h3>
+        <p>Please check your connection and try again.</p>
+        <button onclick="loadBlogs()" class="btn btn-secondary">
+          <i class="fas fa-redo"></i> Retry
+        </button>
+      </div>
+    `;
+  }
+}
+
+// View blog details from Firebase
+async function viewBlog(blogId) {
+  try {
+    const firebase = await initializeFirebase();
+    if (!firebase) {
+      showErrorToast('Cannot connect to database. Please try again later.');
+      return;
+    }
+
+    const { db, doc, getDoc } = firebase;
+    const docSnap = await getDoc(doc(db, "blogs", blogId));
+
+    if (docSnap.exists()) {
+      const blog = docSnap.data();
+      window.showBlogModal(blog);
+    } else {
+      showErrorToast('Blog post not found!');
+    }
+  } catch (error) {
+    console.error('Error loading blog:', error);
+    showErrorToast('Error loading blog post. Please try again.');
+  }
+}
+
 // Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Portfolio initialized');
@@ -833,5 +812,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Make functions globally available
   window.soundManager = soundManager;
+  window.loadPianoVideos = loadPianoVideos;
+  window.loadBlogs = loadBlogs;
   window.viewBlog = viewBlog;
+  window.showErrorToast = showErrorToast;
 });
