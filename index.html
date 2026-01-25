@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nowraj — Portfolio</title>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading" id="loadingScreen">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+  
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress"></div>
+  
+  <!-- HEADER / NAV - Auto-hide -->
+  <header class="site-header" id="mainHeader">
+    <div class="header-inner">
+      <!-- Brand Logo - Enlarged -->
+      <a class="brand" href="#/">
+        <img src="assets/nowraj-logo.png" alt="Nowraj" class="brand-img" />
+      </a>
+      
+      <!-- Desktop Navigation -->
+      <nav class="nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="#/" class="nav-link active">Home</a></li>
+          <li><a href="#/piano" class="nav-link">Piano</a></li>
+          <li><a href="#/blogs" class="nav-link">Blogs</a></li>
+          <li><a href="#/study" class="nav-link">Study</a></li>
+          <li><a href="#/goals" class="nav-link">Goals</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <!-- Sound Toggle - Styled -->
+        <button id="soundToggle" class="sound-toggle" aria-label="Toggle sound" title="Toggle sound effects">
+          <div class="sound-toggle-inner">
+            <i class="fas fa-volume-up sound-on"></i>
+            <i class="fas fa-volume-mute sound-off"></i>
+          </div>
+        </button>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" id="menuToggle" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Animated Background Elements -->
+  <div class="background-elements">
+    <div class="floating-circle circle-1"></div>
+    <div class="floating-circle circle-2"></div>
+    <div class="floating-circle circle-3"></div>
+    <div class="grid-pattern"></div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="app" class="app-root">
+    <!-- Home Page -->
+    <div id="home-content" class="page-content active">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-image">
+          <div class="photo-frame"></div>
+          <img src="assets/myphoto.png" alt="Nowraj Pandey" class="profile-photo" />
+        </div>
+        <div class="hero-content">
+          <p class="greeting">Hello there! 👋</p>
+          <h1 class="name">I am Nowraj Pandey</h1>
+          <h2 class="tagline">Aspiring Software Developer & Music Enthusiast</h2>
+          <p class="description">
+            I'm a passionate student diving deep into the world of technology while exploring my love for music. 
+            Currently learning piano and guitar, I find harmony in both code and chords. My journey involves 
+            mastering programming languages, clearing JEE exams, and creating meaningful digital experiences.
+          </p>
+          <div class="cta-buttons">
+            <a href="#/piano" class="btn btn-primary">
+              <i class="fas fa-music"></i> Piano Journey
+            </a>
+            <a href="#/study" class="btn btn-secondary">
+              <i class="fas fa-graduation-cap"></i> Study Progress
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skills Section -->
+      <section class="skills-section">
+        <h2 class="section-title">Programming Languages I'm Learning</h2>
+        <div class="skills-grid">
+          <div class="skill-card">
+            <i class="fab fa-html5 skill-icon"></i>
+            <span class="skill-name">HTML5</span>
+            <div class="skill-level">
+              <div class="skill-progress" style="width: 90%"></div>
+            </div>
+          </div>
+          <div class="skill-card">
+            <i class="fab fa-css3-alt skill-icon"></i>
+            <span class="skill-name">CSS3</span>
+            <div class="skill-level">
+              <div class="skill-progress" style="width: 85%"></div>
+            </div>
+          </div>
+          <div class="skill-card">
+            <i class="fab fa-js skill-icon"></i>
+            <span class="skill-name">JavaScript</span>
+            <div class="skill-level">
+              <div class="skill-progress" style="width: 80%"></div>
+            </div>
+          </div>
+          <div class="skill-card">
+            <i class="fab fa-python skill-icon"></i>
+            <span class="skill-name">Python</span>
+            <div class="skill-level">
+              <div class="skill-progress" style="width: 75%"></div>
+            </div>
+          </div>
+          <div class="skill-card">
+            <i class="fab fa-cuttlefish skill-icon"></i>
+            <span class="skill-name">C++</span>
+            <div class="skill-level">
+              <div class="skill-progress" style="width: 70%"></div>
+            </div>
+          </div>
+          <div class="skill-card">
+            <i class="fab fa-java skill-icon"></i>
+            <span class="skill-name">Java</span>
+            <div class="skill-level">
+              <div class="skill-progress" style="width: 65%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects Section -->
+      <section class="projects-section">
+        <h2 class="section-title">My Projects</h2>
+        <p class="coming-soon-text">🚀 Exciting projects coming soon! Stay tuned for updates.</p>
+        <div class="content-grid">
+          <div class="project-card">
+            <i class="fas fa-code project-icon"></i>
+            <h3>Portfolio Website</h3>
+            <p>This responsive portfolio website built with modern CSS animations, glass morphism effects, and smooth transitions. Features auto-hide navigation, cursor effects, and dynamic content loading.</p>
+            <div class="project-tech">
+              <span class="tech-tag">HTML</span>
+              <span class="tech-tag">CSS</span>
+              <span class="tech-tag">JavaScript</span>
+              <span class="tech-tag">Firebase</span>
+            </div>
+            <span class="project-status" data-status="completed">Completed</span>
+          </div>
+          
+          <div class="project-card">
+            <i class="fas fa-music project-icon"></i>
+            <h3>Piano Practice Tracker</h3>
+            <p>Web app to track piano practice sessions, progress, and repertoire. Includes metronome, practice timer, and performance recording features integrated with YouTube API.</p>
+            <div class="project-tech">
+              <span class="tech-tag">React</span>
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">YouTube API</span>
+              <span class="tech-tag">MongoDB</span>
+            </div>
+            <span class="project-status" data-status="in-progress">In Progress</span>
+          </div>
+          
+          <div class="project-card">
+            <i class="fas fa-robot project-icon"></i>
+            <h3>AI Study Assistant</h3>
+            <p>AI-powered study assistant that helps with JEE preparation, generates practice questions, tracks progress, and provides personalized learning recommendations.</p>
+            <div class="project-tech">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">OpenAI API</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">PostgreSQL</span>
+            </div>
+            <span class="project-status" data-status="coming-soon">Coming Soon</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <footer class="site-footer">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>Connect With Me</h3>
+            <ul class="footer-links">
+              <li><a href="mailto:pinkypandey53863@gmail.com"><i class="fas fa-envelope"></i> Email</a></li>
+            </ul>
+            <div class="social-links">
+              <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="#/"><i class="fas fa-home"></i> Home</a></li>
+              <li><a href="#/piano"><i class="fas fa-music"></i> Piano</a></li>
+              <li><a href="#/blogs"><i class="fas fa-blog"></i> Blogs</a></li>
+              <li><a href="#/study"><i class="fas fa-book"></i> Study</a></li>
+              <li><a href="#/goals"><i class="fas fa-flag"></i> Goals</a></li>
+            </ul>
+          </div>
+        </div>
+        <p class="footer-note">Made with ❤️ in India</p>
+      </footer>
+    </div>
+
+    <!-- Piano Page -->
+    <div id="piano-content" class="page-content">
+      <div class="page-header">
+        <h1 class="page-title">🎹 Piano Journey</h1>
+        <p class="page-subtitle">My musical adventure with classical pieces and modern compositions</p>
+      </div>
+      
+      <div class="page-description">
+        <p>My musical journey with piano began as a way to express creativity beyond code. I'm currently learning classical pieces and exploring how music theory intersects with programming concepts.</p>
+      </div>
+      
+      <!-- Piano Videos Section -->
+      <section class="piano-videos-section">
+        <h2 class="section-title">My Piano Performances</h2>
+        <div id="pianoVideosContainer" class="videos-grid">
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading piano performances...</p>
+            <p class="loading-subtext">If content doesn't load, please check your internet connection.</p>
+          </div>
+        </div>
+      </section>
+      
+      <div class="content-grid">
+        <div class="content-card piano-card">
+          <div class="card-header">
+            <i class="fas fa-music card-icon"></i>
+            <h3>Current Pieces</h3>
+          </div>
+          <ul class="styled-list">
+            <li><i class="fas fa-circle"></i> Moonlight Sonata - Beethoven</li>
+            <li><i class="fas fa-circle"></i> Clair de Lune - Debussy</li>
+            <li><i class="fas fa-circle"></i> River Flows in You - Yiruma</li>
+          </ul>
+        </div>
+        <div class="content-card piano-card">
+          <div class="card-header">
+            <i class="fas fa-calendar-alt card-icon"></i>
+            <h3>Practice Routine</h3>
+          </div>
+          <ul class="styled-list">
+            <li><i class="fas fa-check-circle"></i> Daily scales and arpeggios</li>
+            <li><i class="fas fa-check-circle"></i> Sight reading exercises</li>
+            <li><i class="fas fa-check-circle"></i> Piece learning and refinement</li>
+          </ul>
+        </div>
+        <div class="content-card piano-card">
+          <div class="card-header">
+            <i class="fas fa-bullseye card-icon"></i>
+            <h3>Musical Goals</h3>
+          </div>
+          <ul class="styled-list">
+            <li><i class="fas fa-star"></i> Master classical repertoire</li>
+            <li><i class="fas fa-star"></i> Learn music composition</li>
+            <li><i class="fas fa-star"></i> Combine coding with music creation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blogs Page -->
+    <div id="blogs-content" class="page-content">
+      <div class="page-header">
+        <h1 class="page-title">📝 Blogs & Thoughts</h1>
+        <p class="page-subtitle">Sharing my journey through technology, music, and personal growth</p>
+      </div>
+      
+      <div class="page-description">
+        <p>Here you'll find insights about programming, learning experiences, and creative pursuits. I write about technology, education, and the intersection of code and music.</p>
+      </div>
+      
+      <div id="blogsList" class="content-grid">
+        <div class="loading-state">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading blog posts...</p>
+          <p class="loading-subtext">If content doesn't load, please check your internet connection.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Study Page -->
+    <div id="study-content" class="page-content">
+      <div class="page-header">
+        <h1 class="page-title">📚 Study & Learning</h1>
+        <p class="page-subtitle">My educational journey and academic achievements</p>
+      </div>
+      
+      <div class="page-description">
+        <p>My educational journey has been marked by consistent growth and academic excellence. I believe in combining structured learning with practical application to achieve meaningful results.</p>
+      </div>
+      
+      <div class="content-grid">
+        <div class="content-card study-card">
+          <div class="card-header">
+            <i class="fas fa-graduation-cap card-icon"></i>
+            <h3>🏫 Educational Journey</h3>
+          </div>
+          <div class="education-timeline">
+            <div class="education-item">
+              <div class="education-period">2021 - Present</div>
+              <div class="education-details">
+                <h4>West Point School</h4>
+                <p>Class 6 to 10 • ICSE Curriculum</p>
+                <p class="education-highlight">Currently enrolled</p>
+              </div>
+            </div>
+            <div class="education-item">
+              <div class="education-period">2016 - 2021</div>
+              <div class="education-details">
+                <h4>Tiny Tot's School</h4>
+                <p>KG to Class 5 • Foundation Years</p>
+                <p class="education-highlight">Strong academic foundation</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-card achievement-card">
+          <div class="card-header">
+            <i class="fas fa-trophy card-icon"></i>
+            <h3>🎓 Academic Excellence</h3>
+          </div>
+          <div class="achievement-badge">
+            <div class="achievement-icon">🏆</div>
+            <div class="achievement-details">
+              <h4>Class 10 ICSE Board</h4>
+              <p class="achievement-score">93.2% Overall Percentage</p>
+              <p class="achievement-year">2024</p>
+            </div>
+          </div>
+          <div class="achievement-description">
+            Outstanding performance in ICSE examinations demonstrating strong academic capabilities and consistent dedication to learning.
+          </div>
+          <div class="achievement-highlights">
+            <div class="highlight-item">
+              <i class="fas fa-check"></i>
+              <span>Top performer in Mathematics</span>
+            </div>
+            <div class="highlight-item">
+              <i class="fas fa-check"></i>
+              <span>Excellent in Science subjects</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="content-card focus-card">
+          <div class="card-header">
+            <i class="fas fa-book-open card-icon"></i>
+            <h3>📚 Current Focus</h3>
+          </div>
+          <div class="focus-list">
+            <div class="focus-item">
+              <i class="fas fa-code"></i>
+              <div>
+                <strong>Data Structures & Algorithms</strong>
+                <span>Mastering core CS concepts</span>
+              </div>
+            </div>
+            <div class="focus-item">
+              <i class="fas fa-globe"></i>
+              <div>
+                <strong>Web Development Stack</strong>
+                <span>HTML, CSS, JavaScript, React</span>
+              </div>
+            </div>
+            <div class="focus-item">
+              <i class="fas fa-calculator"></i>
+              <div>
+                <strong>Mathematics for Programming</strong>
+                <span>Advanced math concepts</span>
+              </div>
+            </div>
+            <div class="focus-item">
+              <i class="fas fa-book"></i>
+              <div>
+                <strong>JEE Preparation</strong>
+                <span>Physics, Chemistry, Mathematics</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals Page -->
+    <div id="goals-content" class="page-content">
+      <div class="page-header">
+        <h1 class="page-title">🌟 Goals & Aspirations</h1>
+        <p class="page-subtitle">My roadmap for technology, education, and personal growth</p>
+      </div>
+      
+      <div class="page-description">
+        <p>Setting clear goals has been crucial in my journey. Here are my current objectives and long-term aspirations in technology, education, and personal growth.</p>
+      </div>
+      
+      <div class="goals-timeline">
+        <div class="timeline-item">
+          <div class="timeline-period">🎯 Short-term (2024-2025)</div>
+          <div class="timeline-content">
+            <h3>Immediate Objectives</h3>
+            <ul class="styled-list">
+              <li><i class="fas fa-rocket"></i> Clear JEE Advanced examination with excellent rank</li>
+              <li><i class="fas fa-code"></i> Master full-stack web development</li>
+              <li><i class="fas fa-project-diagram"></i> Build meaningful real-world projects</li>
+              <li><i class="fas fa-users"></i> Contribute to open-source communities</li>
+              <li><i class="fas fa-music"></i> Advance piano skills to intermediate level</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-period">🚀 Medium-term (2025-2027)</div>
+          <div class="timeline-content">
+            <h3>Academic & Career Goals</h3>
+            <ul class="styled-list">
+              <li><i class="fas fa-graduation-cap"></i> Pursue Computer Science degree from premier institute</li>
+              <li><i class="fas fa-brain"></i> Develop expertise in machine learning and AI</li>
+              <li><i class="fas fa-briefcase"></i> Intern at leading tech companies</li>
+              <li><i class="fas fa-network-wired"></i> Establish strong professional network</li>
+              <li><i class="fas fa-globe"></i> Participate in international coding competitions</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-period">💫 Long-term (2027+)</div>
+          <div class="timeline-content">
+            <h3>Life Vision & Impact</h3>
+            <ul class="styled-list">
+              <li><i class="fas fa-lightbulb"></i> Work on impactful technology that solves real problems</li>
+              <li><i class="fas fa-hands-helping"></i> Mentor aspiring developers and students</li>
+              <li><i class="fas fa-balance-scale"></i> Balance successful tech career with music passion</li>
+              <li><i class="fas fa-seedling"></i> Continue lifelong learning and skill development</li>
+              <li><i class="fas fa-heart"></i> Give back to community through education initiatives</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Back to Top Button -->
+  <a href="#" class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+
+  <!-- Scripts -->
+  <script src="sounds.js"></script>
+  <script src="main.js"></script>
+  <script src="firebase-loader.js"></script>
+  
+  <!-- Navigation Script -->
+  <script>
+  // Simple page navigation - FIXED VERSION
+  document.addEventListener('DOMContentLoaded', function() {
+    // Function to show page
+    function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page-content').forEach(page => {
+        page.style.display = 'none';
+        page.classList.remove('active');
+      });
+      
+      // Show selected page
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.style.display = 'block';
+        setTimeout(() => {
+          targetPage.classList.add('active');
+        }, 10);
+        
+        // Scroll to top smoothly
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        
+        // Load content for specific pages
+        if (pageId === 'piano-content') {
+          setTimeout(() => {
+            if (window.loadPianoVideos) loadPianoVideos();
+          }, 300);
+        } else if (pageId === 'blogs-content') {
+          setTimeout(() => {
+            if (window.loadBlogs) loadBlogs();
+          }, 300);
+        }
+      }
+    }
+
+    // Handle hash changes
+    function handleHashChange() {
+      const hash = window.location.hash.substring(2); // Remove '#/'
+      const pageMap = {
+        '': 'home-content',
+        'piano': 'piano-content',
+        'blogs': 'blogs-content',
+        'study': 'study-content',
+        'goals': 'goals-content'
+      };
+      
+      const pageId = pageMap[hash] || 'home-content';
+      showPage(pageId);
+      
+      // Update active nav links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        const linkHash = link.getAttribute('href').substring(2); // Remove '#/'
+        if ((hash === '' && linkHash === '') || (hash === linkHash)) {
+          link.classList.add('active');
+        }
+      });
+      
+      // Update cursor visibility
+      const cursor = document.querySelector('.cursor-effect');
+      if (cursor) {
+        if (pageId === 'home-content') {
+          cursor.style.display = 'block';
+        } else {
+          cursor.style.display = 'none';
+        }
+      }
+    }
+
+    // Set up navigation links
+    function setupNavLinks() {
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const href = this.getAttribute('href');
+          window.location.hash = href;
+        });
+      });
+    }
+
+    // Initialize navigation
+    function initNavigation() {
+      // Set up links
+      setupNavLinks();
+      
+      // Handle initial hash
+      if (!window.location.hash || window.location.hash === '#') {
+        window.location.hash = '#/';
+      }
+      
+      // Initial page load
+      handleHashChange();
+      
+      // Listen for hash changes
+      window.addEventListener('hashchange', handleHashChange);
+      
+      // Also listen for popstate (back/forward buttons)
+      window.addEventListener('popstate', handleHashChange);
+    }
+
+    // Start navigation
+    initNavigation();
+    
+    // Back to top button
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+      backToTop.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+      
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+      });
+    }
+    
+    // Hide loading screen
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
+        }
+      }, 1000);
+    });
+    
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.querySelector('.nav');
+    if (menuToggle && nav) {
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        nav.classList.toggle('active');
+        menuToggle.querySelector('i').className = nav.classList.contains('active') 
+          ? 'fas fa-times' 
+          : 'fas fa-bars';
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
+          nav.classList.remove('active');
+          menuToggle.querySelector('i').className = 'fas fa-bars';
+        }
+      });
+    }
+  });
+  </script>
+</body>
+</html>

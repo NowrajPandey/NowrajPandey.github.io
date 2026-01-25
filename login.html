@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login - Nowraj</title>
+  
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <style>
+    /* Import your main website styles */
+    @import url('styles.css');
+    
+    /* Admin specific styles */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: var(--bg);
+    }
+    
+    .login-box {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .login-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--text);
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    .login-icon {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      transition: all var(--transition);
+      backdrop-filter: var(--glass-blur);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    }
+    
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 10px;
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 102, 255, 0.3);
+    }
+    
+    .message {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 500;
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .error {
+      background: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+      border: 1px solid rgba(244, 67, 54, 0.2);
+    }
+    
+    .success {
+      background: rgba(76, 175, 80, 0.1);
+      color: #4CAF50;
+      border: 1px solid rgba(76, 175, 80, 0.2);
+    }
+    
+    .loading {
+      background: rgba(33, 150, 243, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(33, 150, 243, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-icon">
+        <i data-lucide="lock" width="48" height="48" style="color: var(--accent);"></i>
+      </div>
+      <h1 class="login-title">Admin Login</h1>
+      
+      <div class="form-group">
+        <input type="email" id="email" class="form-input" placeholder="Email address" required>
+      </div>
+      
+      <div class="form-group">
+        <input type="password" id="password" class="form-input" placeholder="Password" required>
+      </div>
+      
+      <button id="loginBtn" class="login-btn">
+        <span id="btnText">Sign In</span>
+      </button>
+      
+      <div id="message" class="message"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCP-FF-B3hKADVJ5l5us5LAAQl2Sm-_ebU",
+      authDomain: "mywebsite-b05e8.firebaseapp.com",
+      projectId: "mywebsite-b05e8",
+      storageBucket: "mywebsite-b05e8.firebasestorage.app",
+      messagingSenderId: "1095561283748",
+      appId: "1:1095561283748:web:9b1a7735fa787dded2be31"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Initialize icons
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+
+    document.getElementById("loginBtn").onclick = function() {
+      const email = document.getElementById("email").value;
+      const pass = document.getElementById("password").value;
+      const message = document.getElementById("message");
+      const btnText = document.getElementById("btnText");
+
+      if (!email || !pass) {
+        message.className = "message error";
+        message.innerText = "Please fill in both fields!";
+        return;
+      }
+
+      message.className = "message loading";
+      message.innerText = "Signing in...";
+      btnText.innerText = "Signing in...";
+      this.disabled = true;
+
+      signInWithEmailAndPassword(auth, email, pass)
+        .then(() => {
+          message.className = "message success";
+          message.innerText = "Login successful! Redirecting...";
+          setTimeout(() => {
+            window.location.href = "admin.html";
+          }, 1000);
+        })
+        .catch((err) => {
+          message.className = "message error";
+          message.innerText = "Error: " + err.message;
+          btnText.innerText = "Sign In";
+          this.disabled = false;
+        });
+    };
+
+    // Allow enter key to submit
+    document.getElementById("password").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        document.getElementById("loginBtn").click();
+      }
+    });
+  </script>
+</body>
+</html>
