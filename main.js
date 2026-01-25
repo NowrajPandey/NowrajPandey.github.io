@@ -5,7 +5,7 @@
 // ======================
 const firebaseConfig = {
   apiKey: "AIzaSyCP-FF-B3hKADVJ5l5us5LAAQl2Sm-_ebU",
-  authDomain: "mywebsite-b05e8.firebasestorage.app",
+  authDomain: "mywebsite-b05e8.firebaseapp.com",
   projectId: "mywebsite-b05e8",
   storageBucket: "mywebsite-b05e8.firebasestorage.app",
   messagingSenderId: "1095561283748",
@@ -108,11 +108,11 @@ function setupNavigation() {
       // Load content for specific pages
       if (pageId === 'piano-content') {
         setTimeout(() => {
-          if (window.loadPianoVideos) loadPianoVideos();
+          loadPianoVideos();
         }, 300);
       } else if (pageId === 'blogs-content') {
         setTimeout(() => {
-          if (window.loadBlogs) loadBlogs();
+          loadBlogs();
         }, 300);
       }
     }
@@ -614,7 +614,7 @@ function showErrorToast(message) {
 // FIREBASE FUNCTIONS
 // ===========================
 
-// Load piano videos from Firebase
+// Load piano videos from Firebase (with fallback)
 async function loadPianoVideos() {
   const container = document.getElementById('pianoVideosContainer');
   if (!container) return;
@@ -630,7 +630,7 @@ async function loadPianoVideos() {
   try {
     const firebase = await initializeFirebase();
     if (!firebase) {
-      throw new Error('Failed to initialize Firebase');
+      throw new Error('Firebase initialization failed');
     }
 
     const { db, getDocs, collection, query, orderBy } = firebase;
@@ -686,20 +686,27 @@ async function loadPianoVideos() {
 
   } catch (error) {
     console.error('Error loading piano videos:', error);
+    
+    // Fallback content when Firebase fails
     container.innerHTML = `
-      <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Failed to Load Content</h3>
-        <p>Please check your connection and try again.</p>
-        <button onclick="loadPianoVideos()" class="btn btn-secondary">
-          <i class="fas fa-redo"></i> Retry
-        </button>
+      <div class="no-content">
+        <i class="fas fa-music"></i>
+        <h3>Piano Performances Coming Soon</h3>
+        <p>I'm currently working on recording my piano performances. Check back soon!</p>
+        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="background: var(--glass-bg); padding: 1rem; border-radius: 12px;">
+            <h4>🎵 Currently Practicing</h4>
+            <p>• Moonlight Sonata - Beethoven</p>
+            <p>• Clair de Lune - Debussy</p>
+            <p>• River Flows in You - Yiruma</p>
+          </div>
+        </div>
       </div>
     `;
   }
 }
 
-// Load blogs from Firebase
+// Load blogs from Firebase (with fallback)
 async function loadBlogs() {
   const container = document.getElementById('blogsList');
   if (!container) return;
@@ -715,7 +722,7 @@ async function loadBlogs() {
   try {
     const firebase = await initializeFirebase();
     if (!firebase) {
-      throw new Error('Failed to initialize Firebase');
+      throw new Error('Firebase initialization failed');
     }
 
     const { db, getDocs, collection, query, orderBy } = firebase;
@@ -759,14 +766,21 @@ async function loadBlogs() {
 
   } catch (error) {
     console.error('Error loading blogs:', error);
+    
+    // Fallback content when Firebase fails
     container.innerHTML = `
-      <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Failed to Load Blogs</h3>
-        <p>Please check your connection and try again.</p>
-        <button onclick="loadBlogs()" class="btn btn-secondary">
-          <i class="fas fa-redo"></i> Retry
-        </button>
+      <div class="no-content">
+        <i class="fas fa-blog"></i>
+        <h3>Blog Posts Coming Soon</h3>
+        <p>I'm working on some exciting blog posts about technology, music, and learning. Stay tuned!</p>
+        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+          <div style="background: var(--glass-bg); padding: 1rem; border-radius: 12px;">
+            <h4>📝 Upcoming Topics</h4>
+            <p>• Learning Web Development Journey</p>
+            <p>• Piano Practice Tips for Beginners</p>
+            <p>• Balancing Studies with Creative Pursuits</p>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -816,4 +830,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.loadBlogs = loadBlogs;
   window.viewBlog = viewBlog;
   window.showErrorToast = showErrorToast;
+  window.showBlogModal = window.showBlogModal; // Ensure this is available
 });
