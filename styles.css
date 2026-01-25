@@ -194,6 +194,34 @@ p {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Add this to your styles.css */
+.error-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.3s;
+  max-width: 300px;
+  backdrop-filter: blur(10px);
+}
+
+.error-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.error-toast i {
+  font-size: 18px;
+}
 .site-header.hidden {
   transform: translateY(-100%);
 }
@@ -3406,3 +3434,4 @@ border: 1px solid white;
 }
 
  
+
