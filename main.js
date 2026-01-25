@@ -191,6 +191,246 @@ function setupCursorEffect() {
   });
 }
 
+// Blog Modal Functionality
+function setupBlogModal() {
+  const blogModal = document.getElementById('blogModal');
+  const blogModalClose = document.getElementById('blogModalClose');
+  const blogModalTitle = document.getElementById('blogModalTitle');
+  const blogModalContent = document.getElementById('blogModalContent');
+  const blogModalProgress = document.querySelector('.blog-modal-progress');
+
+  // Close modal
+  blogModalClose.addEventListener('click', () => {
+    blogModal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  });
+
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && blogModal.classList.contains('active')) {
+      blogModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  // Close on outside click
+  blogModal.addEventListener('click', (e) => {
+    if (e.target === blogModal) {
+      blogModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  // Reading progress
+  if (blogModalContent) {
+    blogModalContent.addEventListener('scroll', () => {
+      const scrollTop = blogModalContent.scrollTop;
+      const scrollHeight = blogModalContent.scrollHeight - blogModalContent.clientHeight;
+      const scrollProgress = scrollTop / scrollHeight;
+      
+      if (blogModalProgress) {
+        blogModalProgress.style.transform = `scaleX(${scrollProgress})`;
+      }
+    });
+  }
+
+  // Make function global
+  window.showBlogModal = function(blogData) {
+    if (!blogModal || !blogModalTitle || !blogModalContent) return;
+    
+    // Set title
+    blogModalTitle.textContent = blogData.title || 'Blog Post';
+    
+    // Create blog content HTML
+    const blogHTML = `
+      ${blogData.image ? `
+        <div class="blog-modal-hero-image">
+          <img src="${blogData.image}" alt="${blogData.title}" loading="lazy">
+        </div>
+      ` : ''}
+      
+      <div class="blog-modal-meta">
+        <span class="blog-modal-category">${blogData.category || 'General'}</span>
+        <span class="blog-modal-date">
+          <i class="far fa-calendar"></i>
+          ${formatBlogDate(blogData.timestamp)}
+        </span>
+        ${blogData.author ? `
+          <span class="blog-modal-author">
+            <i class="far fa-user"></i>
+            ${blogData.author}
+          </span>
+        ` : ''}
+      </div>
+      
+      <div class="blog-modal-body">
+        ${formatBlogContent(blogData.content || 'No content available.')}
+      </div>
+      
+      ${blogData.tags && blogData.tags.length > 0 ? `
+        <div class="blog-modal-footer">
+          <div class="blog-modal-tags">
+            ${blogData.tags.map(tag => `
+              <span class="blog-modal-tag">${tag}</span>
+            `).join('')}
+          </div>
+          <div class="blog-modal-actions">
+            <button class="blog-modal-like">
+              <i class="far fa-heart"></i> Like
+            </button>
+            <button class="blog-modal-share">
+              <i class="fas fa-share-alt"></i> Share
+            </button>
+          </div>
+        </div>
+      ` : ''}
+    `;
+    
+    // Update modal content
+    blogModalContent.innerHTML = blogHTML;
+    
+    // Add event listeners for like/share buttons
+    setTimeout(() => {
+      const likeBtn = blogModalContent.querySelector('.blog-modal-like');
+      const shareBtn = blogModalContent.querySelector('.blog-modal-share');
+      
+      if (likeBtn) {
+        likeBtn.addEventListener('click', () => {
+          likeBtn.classList.toggle('liked');
+          likeBtn.innerHTML = likeBtn.classList.contains('liked') 
+            ? '<i class="fas fa-heart"></i> Liked'
+            : '<i class="far fa-heart"></i> Like';
+        });
+      }
+      
+      if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+          if (navigator.share) {
+            navigator.share({
+              title: blogData.title,
+              text: blogData.excerpt || blogData.title,
+              url: window.location.href,
+            });
+          } else {
+            // Fallback: Copy to clipboard
+            navigator.clipboard.writeText(window.location.href);
+            const originalText = shareBtn.innerHTML;
+            shareBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+              shareBtn.innerHTML = originalText;
+            }, 2000);
+          }
+        });
+      }
+    }, 100);
+    
+    // Show modal
+    blogModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Reset scroll position
+    blogModalContent.scrollTop = 0;
+    if (blogModalProgress) {
+      blogModalProgress.style.transform = 'scaleX(0)';
+    }
+  };
+}
+
+// Helper function to format blog content
+function formatBlogContent(content) {
+  if (!content) return '<p>No content available.</p>';
+  
+  // Convert markdown-like formatting to HTML
+  return content
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/^# (.*?)$/gm, '<h2>$1</h2>')
+    .replace(/^## (.*?)$/gm, '<h3>$1</h3>')
+    .replace(/^### (.*?)$/gm, '<h4>$1</h4>')
+    .replace(/^> (.*?)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^\- (.*?)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*?<\/li>)/g, '<ul>$1</ul>')
+    .replace(/<\/ul>\s*<ul>/g, '')
+    .replace(/<\/p><p>/g, '</p><p>');
+}
+
+// Helper function to format blog date
+function formatBlogDate(timestamp) {
+  if (!timestamp) return 'Recently';
+  
+  try {
+    if (typeof timestamp.toDate === 'function') {
+      return timestamp.toDate().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } else if (timestamp.seconds) {
+      return new Date(timestamp.seconds * 1000).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } else if (timestamp._seconds) {
+      return new Date(timestamp._seconds * 1000).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+  } catch (error) {
+    console.error('Error formatting date:', error);
+  }
+  
+  return 'Recently';
+}
+
+// Update your existing readBlog function to use the new modal
+function readBlog(blogId) {
+  // Import and initialize Firebase
+  import("https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js")
+    .then(({ initializeApp }) => {
+      return import("https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js")
+        .then(({ getFirestore, doc, getDoc }) => {
+          const firebaseConfig = {
+            apiKey: "AIzaSyCP-FF-B3hKADVJ5l5us5LAAQl2Sm-_ebU",
+            authDomain: "mywebsite-b05e8.firebaseapp.com",
+            projectId: "mywebsite-b05e8",
+            storageBucket: "mywebsite-b05e8.firebasestorage.app",
+            messagingSenderId: "1095561283748",
+            appId: "1:1095561283748:web:9b1a7735fa787dded2be31"
+          };
+
+          const app = initializeApp(firebaseConfig);
+          const db = getFirestore(app);
+
+          return getDoc(doc(db, "blogs", blogId));
+        });
+    })
+    .then((docSnap) => {
+      if (docSnap.exists()) {
+        const blog = docSnap.data();
+        window.showBlogModal(blog);
+      } else {
+        alert('Blog post not found!');
+      }
+    })
+    .catch(error => {
+      console.error('Error loading blog:', error);
+      alert('Error loading blog post. Please try again.');
+    });
+}
+
+// Initialize blog modal on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  setupBlogModal();
+});
+
 // Page loading functionality
 function setupPageLoading() {
   // Hide loading screen when page loads
@@ -522,4 +762,5 @@ function handlePageChange() {
 // Make functions globally available
 window.loadPianoVideos = loadPianoVideos;
 window.loadBlogs = loadBlogs;
+
 window.viewBlog = viewBlog;
