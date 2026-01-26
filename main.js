@@ -22,10 +22,10 @@ async function initializeFirebase() {
   }
   
   try {
-    // Dynamically import Firebase modules
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js');
+    // CORRECT Firebase import URLs - using version 9.22.0
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
     const { getFirestore, collection, getDocs, query, orderBy, doc, getDoc } = 
-      await import('https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js');
+      await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
     
     firebaseApp = initializeApp(firebaseConfig);
     firestore = getFirestore(firebaseApp);
@@ -360,111 +360,6 @@ function setupBlogModal() {
       }
     });
   }
-
-  // Make function global
-  window.showBlogModal = function(blogData) {
-    if (!blogModal || !blogModalTitle || !blogModalContent) return;
-    
-    soundManager.play('click');
-    
-    // Set title
-    blogModalTitle.textContent = blogData.title || 'Blog Post';
-    
-    // Create blog content HTML
-    const blogHTML = `
-      ${blogData.image ? `
-        <div class="blog-modal-hero-image">
-          <img src="${blogData.image}" alt="${blogData.title}" loading="lazy">
-        </div>
-      ` : ''}
-      
-      <div class="blog-modal-meta">
-        <span class="blog-modal-category">${blogData.category || 'General'}</span>
-        <span class="blog-modal-date">
-          <i class="far fa-calendar"></i>
-          ${formatBlogDate(blogData.timestamp)}
-        </span>
-        ${blogData.author ? `
-          <span class="blog-modal-author">
-            <i class="far fa-user"></i>
-            ${blogData.author}
-          </span>
-        ` : ''}
-      </div>
-      
-      <div class="blog-modal-body">
-        ${formatBlogContent(blogData.content || 'No content available.')}
-      </div>
-      
-      ${blogData.tags && blogData.tags.length > 0 ? `
-        <div class="blog-modal-footer">
-          <div class="blog-modal-tags">
-            ${blogData.tags.map(tag => `
-              <span class="blog-modal-tag">${tag}</span>
-            `).join('')}
-          </div>
-          <div class="blog-modal-actions">
-            <button class="blog-modal-like">
-              <i class="far fa-heart"></i> Like
-            </button>
-            <button class="blog-modal-share">
-              <i class="fas fa-share-alt"></i> Share
-            </button>
-          </div>
-        </div>
-      ` : ''}
-    `;
-    
-    // Update modal content
-    blogModalContent.innerHTML = blogHTML;
-    
-    // Add event listeners for like/share buttons
-    setTimeout(() => {
-      const likeBtn = blogModalContent.querySelector('.blog-modal-like');
-      const shareBtn = blogModalContent.querySelector('.blog-modal-share');
-      
-      if (likeBtn) {
-        likeBtn.addEventListener('click', () => {
-          soundManager.play('click');
-          likeBtn.classList.toggle('liked');
-          likeBtn.innerHTML = likeBtn.classList.contains('liked') 
-            ? '<i class="fas fa-heart"></i> Liked'
-            : '<i class="far fa-heart"></i> Like';
-        });
-      }
-      
-      if (shareBtn) {
-        shareBtn.addEventListener('click', () => {
-          soundManager.play('click');
-          if (navigator.share) {
-            navigator.share({
-              title: blogData.title,
-              text: blogData.excerpt || blogData.title,
-              url: window.location.href,
-            });
-          } else {
-            // Fallback: Copy to clipboard
-            navigator.clipboard.writeText(window.location.href);
-            const originalText = shareBtn.innerHTML;
-            shareBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            setTimeout(() => {
-              shareBtn.innerHTML = originalText;
-            }, 2000);
-          }
-        });
-      }
-    }, 100);
-    
-    // Show modal
-    blogModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Reset scroll position
-    blogModalContent.scrollTop = 0;
-    if (blogModalProgress) {
-      blogModalProgress.style.transform = 'scaleX(0)';
-    }
-  };
 }
 
 // Helper function to format blog content
@@ -746,7 +641,7 @@ async function loadBlogs() {
       const date = blog.timestamp?.toDate?.() || new Date();
       
       blogsHTML += `
-        <div class="content-card blog-card">
+        <div class="content-card blog-card" data-blog-id="${doc.id}">
           <div class="blog-content">
             <div class="blog-meta">
               <span class="blog-category">${blog.category || 'General'}</span>
@@ -754,7 +649,7 @@ async function loadBlogs() {
             </div>
             <h3 class="blog-title">${blog.title || 'Untitled Post'}</h3>
             <p class="blog-excerpt">${blog.excerpt || 'No excerpt available.'}</p>
-            <button class="read-more-btn" onclick="viewBlog('${doc.id}')">
+            <button class="read-more-btn" data-blog-id="${doc.id}">
               Read More <i class="fas fa-arrow-right"></i>
             </button>
           </div>
@@ -763,6 +658,17 @@ async function loadBlogs() {
     });
 
     container.innerHTML = blogsHTML;
+    
+    // Add event listeners to read more buttons
+    setTimeout(() => {
+      const readMoreButtons = container.querySelectorAll('.read-more-btn');
+      readMoreButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const blogId = this.getAttribute('data-blog-id');
+          viewBlog(blogId);
+        });
+      });
+    }, 100);
 
   } catch (error) {
     console.error('Error loading blogs:', error);
@@ -800,13 +706,123 @@ async function viewBlog(blogId) {
 
     if (docSnap.exists()) {
       const blog = docSnap.data();
-      window.showBlogModal(blog);
+      showBlogModal(blog);
     } else {
       showErrorToast('Blog post not found!');
     }
   } catch (error) {
     console.error('Error loading blog:', error);
     showErrorToast('Error loading blog post. Please try again.');
+  }
+}
+
+// Show blog modal
+function showBlogModal(blogData) {
+  const blogModal = document.getElementById('blogModal');
+  const blogModalTitle = document.getElementById('blogModalTitle');
+  const blogModalContent = document.getElementById('blogModalContent');
+  const blogModalProgress = document.querySelector('.blog-modal-progress');
+
+  if (!blogModal || !blogModalTitle || !blogModalContent) return;
+  
+  soundManager.play('click');
+  
+  // Set title
+  blogModalTitle.textContent = blogData.title || 'Blog Post';
+  
+  // Create blog content HTML
+  const blogHTML = `
+    ${blogData.image ? `
+      <div class="blog-modal-hero-image">
+        <img src="${blogData.image}" alt="${blogData.title}" loading="lazy">
+      </div>
+    ` : ''}
+    
+    <div class="blog-modal-meta">
+      <span class="blog-modal-category">${blogData.category || 'General'}</span>
+      <span class="blog-modal-date">
+        <i class="far fa-calendar"></i>
+        ${formatBlogDate(blogData.timestamp)}
+      </span>
+      ${blogData.author ? `
+        <span class="blog-modal-author">
+          <i class="far fa-user"></i>
+          ${blogData.author}
+        </span>
+      ` : ''}
+    </div>
+    
+    <div class="blog-modal-body">
+      ${formatBlogContent(blogData.content || 'No content available.')}
+    </div>
+    
+    ${blogData.tags && blogData.tags.length > 0 ? `
+      <div class="blog-modal-footer">
+        <div class="blog-modal-tags">
+          ${blogData.tags.map(tag => `
+            <span class="blog-modal-tag">${tag}</span>
+          `).join('')}
+        </div>
+        <div class="blog-modal-actions">
+          <button class="blog-modal-like">
+            <i class="far fa-heart"></i> Like
+          </button>
+          <button class="blog-modal-share">
+            <i class="fas fa-share-alt"></i> Share
+          </button>
+        </div>
+      </div>
+    ` : ''}
+  `;
+  
+  // Update modal content
+  blogModalContent.innerHTML = blogHTML;
+  
+  // Add event listeners for like/share buttons
+  setTimeout(() => {
+    const likeBtn = blogModalContent.querySelector('.blog-modal-like');
+    const shareBtn = blogModalContent.querySelector('.blog-modal-share');
+    
+    if (likeBtn) {
+      likeBtn.addEventListener('click', () => {
+        soundManager.play('click');
+        likeBtn.classList.toggle('liked');
+        likeBtn.innerHTML = likeBtn.classList.contains('liked') 
+          ? '<i class="fas fa-heart"></i> Liked'
+          : '<i class="far fa-heart"></i> Like';
+      });
+    }
+    
+    if (shareBtn) {
+      shareBtn.addEventListener('click', () => {
+        soundManager.play('click');
+        if (navigator.share) {
+          navigator.share({
+            title: blogData.title,
+            text: blogData.excerpt || blogData.title,
+            url: window.location.href,
+          });
+        } else {
+          // Fallback: Copy to clipboard
+          navigator.clipboard.writeText(window.location.href);
+          const originalText = shareBtn.innerHTML;
+          shareBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          setTimeout(() => {
+            shareBtn.innerHTML = originalText;
+          }, 2000);
+        }
+      });
+    }
+  }, 100);
+  
+  // Show modal
+  blogModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  // Reset scroll position
+  blogModalContent.scrollTop = 0;
+  if (blogModalProgress) {
+    blogModalProgress.style.transform = 'scaleX(0)';
   }
 }
 
@@ -829,6 +845,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.loadPianoVideos = loadPianoVideos;
   window.loadBlogs = loadBlogs;
   window.viewBlog = viewBlog;
+  window.showBlogModal = showBlogModal;
   window.showErrorToast = showErrorToast;
-  window.showBlogModal = window.showBlogModal; // Ensure this is available
 });
