@@ -20,6 +20,48 @@
   
   <!-- Scroll Progress Bar -->
   <div class="scroll-progress"></div>
+
+  <!-- Add this anywhere in your index.html body -->
+<div style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+  <button onclick="testFirebaseConnection()" style="background: #ff4444; color: white; padding: 10px; border: none; border-radius: 5px;">
+    Test Firebase
+  </button>
+</div>
+
+<script>
+async function testFirebaseConnection() {
+  try {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
+    const { getFirestore, collection, getDocs } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
+    
+    const config = {
+      apiKey: "AIzaSyCP-FF-B3hKADVJ5l5us5LAAQl2Sm-_ebU",
+      authDomain: "mywebsite-b05e8.firebaseapp.com",
+      projectId: "mywebsite-b05e8",
+      storageBucket: "mywebsite-b05e8.firebasestorage.app",
+      messagingSenderId: "1095561283748",
+      appId: "1:1095561283748:web:9b1a7735fa787dded2be31"
+    };
+    
+    const app = initializeApp(config);
+    const db = getFirestore(app);
+    
+    // Test piano videos
+    const pianoSnapshot = await getDocs(collection(db, "pianoVideos"));
+    console.log('🎹 Piano videos found:', pianoSnapshot.size);
+    
+    // Test blogs
+    const blogSnapshot = await getDocs(collection(db, "blogs"));
+    console.log('📝 Blogs found:', blogSnapshot.size);
+    
+    alert(`✅ Firebase connected!\nPiano videos: ${pianoSnapshot.size}\nBlogs: ${blogSnapshot.size}`);
+    
+  } catch (error) {
+    console.error('❌ Firebase test failed:', error);
+    alert('❌ Firebase failed: ' + error.message);
+  }
+}
+</script>
   
   <!-- HEADER / NAV - Auto-hide -->
   <header class="site-header" id="mainHeader">
@@ -488,5 +530,6 @@
  
 </body>
 </html>
+
 
 
