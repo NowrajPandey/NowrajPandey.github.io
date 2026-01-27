@@ -1,7 +1,7 @@
 // firebase-loader.js - Preload Firebase for better performance
 
 // Preload Firebase SDKs for faster loading
-function preloadFirebase() {
+/*function preloadFirebase() {
   // Create link elements for preloading
   const preloadApp = document.createElement('link');
   preloadApp.rel = 'preload';
@@ -23,4 +23,5 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', preloadFirebase);
 } else {
   preloadFirebase();
+
 }
