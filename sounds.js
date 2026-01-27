@@ -1,4 +1,8 @@
-/* sounds.js – Sound effects (Web Audio API) */
+/* sounds.js – Sound effects + background piano music */
+
+/* Soft piano loop – seamless background music. Replace with assets/piano-loop.mp3 for a local file. */
+const PIANO_LOOP_URL = 'https://www.orangefreesounds.com/wp-content/uploads/2015/01/Piano-loop-120-bpm.mp3';
+const PIANO_LOOP_FALLBACK = 'assets/piano-loop.mp3';
 
 const Sounds = {
   _ctx: null,
@@ -52,6 +56,53 @@ const Sounds = {
   }
 };
 
+const BackgroundMusic = {
+  audio: null,
+  started: false,
+  _triedFallback: false,
+
+  init() {
+    if (this.audio) return;
+    try {
+      this.audio = new Audio(PIANO_LOOP_URL);
+      this.audio.loop = true;
+      this.audio.volume = 0.2;
+      this.audio.preload = 'auto';
+      const self = this;
+      this.audio.addEventListener('error', function onError() {
+        self.audio.removeEventListener('error', onError);
+        if (!self._triedFallback) {
+          self._triedFallback = true;
+          self.audio = new Audio(PIANO_LOOP_FALLBACK);
+          self.audio.loop = true;
+          self.audio.volume = 0.2;
+          self.audio.preload = 'auto';
+        }
+      });
+    } catch (e) {
+      console.warn('BackgroundMusic: init failed', e);
+    }
+  },
+
+  play() {
+    this.init();
+    if (!this.audio) return;
+    this.audio.volume = 0.2;
+    this.audio.play().then(() => { this.started = true; }).catch(() => {});
+  },
+
+  pause() {
+    if (!this.audio) return;
+    this.audio.pause();
+    this.audio.currentTime = 0;
+  },
+
+  setVolume(v) {
+    if (this.audio) this.audio.volume = Math.max(0, Math.min(1, v));
+  }
+};
+
 if (typeof window !== 'undefined') {
   window.Sounds = Sounds;
+  window.BackgroundMusic = BackgroundMusic;
 }
