@@ -588,6 +588,44 @@ async function viewBlog(blogId) {
     alert('Error loading blog: ' + error.message);
   }
 }
+
+function showBlogModal(blogData) {
+  console.log('Showing blog:', blogData.title);
+  
+  const modal = document.getElementById('blogModal');
+  const title = document.getElementById('blogModalTitle');
+  const content = document.getElementById('blogModalContent');
+  
+  if (!modal || !title || !content) return;
+  
+  title.textContent = blogData.title || 'Blog Post';
+  
+  let displayDate = 'Recently';
+  try {
+    if (blogData.timestamp?.toDate) {
+      displayDate = blogData.timestamp.toDate().toLocaleDateString();
+    }
+  } catch (e) {}
+  
+  content.innerHTML = `
+    <div class="blog-modal-meta">
+      <span class="blog-modal-category">${blogData.category || 'General'}</span>
+      <span class="blog-modal-date">
+        <i class="far fa-calendar"></i> ${displayDate}
+      </span>
+    </div>
+    
+    <div class="blog-modal-body">
+      ${blogData.content ? blogData.content.replace(/\n/g, '<br>') : 'No content.'}
+    </div>
+  `;
+  
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+// Make it available globally
+window.showBlogModal = showBlogModal;
 // ======================
 // BLOG MODAL SETUP
 // ======================
@@ -666,5 +704,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   console.log('Portfolio ready!');
 });
+
 
 
