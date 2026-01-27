@@ -1,6 +1,6 @@
-// sounds.js - Sound effects manager
+/* sounds.js - Sound effects manager
 
-const Sounds = {
+/*const Sounds = {
   click: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ'),
   
   init() {
@@ -24,3 +24,4 @@ Sounds.init();
 
 // Export to global scope
 window.Sounds = Sounds;
+
