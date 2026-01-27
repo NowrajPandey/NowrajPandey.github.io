@@ -13,113 +13,54 @@ const firebaseConfig = {
 };
 
 // Global Firebase instance
-let firebaseInitialized = false;
 let firebaseModules = null;
 
 // ======================
 // FIXED FIREBASE INITIALIZATION
 // ======================
 async function initializeFirebase() {
-  // Return cached modules if already initialized
   if (firebaseModules) {
-    console.log('Using cached Firebase modules');
     return firebaseModules;
   }
   
   try {
-    console.log('Loading Firebase...');
+    // Try direct import (most reliable)
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
+    const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
     
-    // IMPORTANT: Using CDN version that definitely works
-    // Load Firebase App
-    const firebaseAppScript = document.createElement('script');
-    firebaseAppScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
     
-    // Load Firebase Firestore
-    const firebaseFirestoreScript = document.createElement('script');
-    firebaseFirestoreScript.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
-    
-    // Wait for both scripts to load
-    await new Promise((resolve, reject) => {
-      let loaded = 0;
-      const checkLoaded = () => {
-        loaded++;
-        if (loaded === 2) {
-          console.log('Firebase scripts loaded');
-          resolve();
-        }
-      };
-      
-      firebaseAppScript.onload = checkLoaded;
-      firebaseFirestoreScript.onload = checkLoaded;
-      firebaseAppScript.onerror = reject;
-      firebaseFirestoreScript.onerror = reject;
-      
-      document.head.appendChild(firebaseAppScript);
-      document.head.appendChild(firebaseFirestoreScript);
-    });
-    
-    // Now firebase should be available globally as window.firebase
-    if (!window.firebase) {
-      throw new Error('Firebase not loaded properly');
-    }
-    
-    // Initialize Firebase app
-    const app = window.firebase.initializeApp(firebaseConfig);
-    const db = window.firebase.firestore();
-    
-    // Store all the functions we need
     firebaseModules = {
       app: app,
-      db: db,
-      getFirestore: () => window.firebase.firestore,
-      collection: (dbRef, collectionName) => dbRef.collection(collectionName),
-      getDocs: (collectionRef) => collectionRef.get(),
-      query: (collectionRef, ...constraints) => collectionRef.where(...constraints),
-      orderBy: (field, direction) => ({field: field, direction: direction || 'asc'}),
-      doc: (dbRef, collectionName, docId) => dbRef.collection(collectionName).doc(docId),
-      getDoc: (docRef) => docRef.get()
+      db: db
     };
     
-    firebaseInitialized = true;
-    console.log('Firebase initialized successfully');
+    console.log('Firebase initialized via import');
     return firebaseModules;
     
   } catch (error) {
-    console.error('Firebase initialization failed:', error);
+    console.error('Firebase import failed:', error);
     
-    // Fallback: Try alternative method
+    // Try global firebase
     try {
-      console.log('Trying alternative Firebase initialization...');
-      
-      // Direct import method
-      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
-      const { getFirestore, collection, getDocs, query, orderBy, doc, getDoc } = 
-        await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
-      
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      
-      firebaseModules = {
-        app: app,
-        db: db,
-        getFirestore: getFirestore,
-        collection: collection,
-        getDocs: getDocs,
-        query: query,
-        orderBy: orderBy,
-        doc: doc,
-        getDoc: getDoc
-      };
-      
-      firebaseInitialized = true;
-      console.log('Firebase initialized via direct import');
-      return firebaseModules;
-      
-    } catch (secondError) {
-      console.error('All Firebase initialization methods failed:', secondError);
-      showErrorToast('Database connection failed. Showing offline content.');
-      return null;
+      if (window.firebase) {
+        const app = window.firebase.initializeApp(firebaseConfig);
+        const db = window.firebase.firestore();
+        
+        firebaseModules = {
+          app: app,
+          db: db
+        };
+        
+        console.log('Firebase initialized via global');
+        return firebaseModules;
+      }
+    } catch (globalError) {
+      console.error('Global Firebase also failed:', globalError);
     }
+    
+    return null;
   }
 }
 
@@ -156,7 +97,7 @@ const soundManager = {
 };
 
 // ======================
-// PAGE NAVIGATION SYSTEM
+// PAGE NAVIGATION SYSTEM - SIMPLIFIED
 // ======================
 function setupNavigation() {
   // Show a specific page
@@ -181,22 +122,19 @@ function setupNavigation() {
       // Load content based on page
       if (pageId === 'piano-content') {
         setTimeout(() => {
-          console.log('Loading piano content');
           loadPianoVideos();
-        }, 300);
+        }, 100);
       } else if (pageId === 'blogs-content') {
         setTimeout(() => {
-          console.log('Loading blog content');
           loadBlogs();
-        }, 300);
+        }, 100);
       }
     }
   }
 
   // Handle URL hash changes
   function handleHashChange() {
-    const hash = window.location.hash.substring(2); // Remove '#/'
-    console.log('Hash changed to:', hash);
+    const hash = window.location.hash.substring(2);
     
     const pageMap = {
       '': 'home-content',
@@ -217,14 +155,6 @@ function setupNavigation() {
         link.classList.add('active');
       }
     });
-    
-    // Close mobile menu
-    const nav = document.querySelector('.nav');
-    const menuToggle = document.getElementById('menuToggle');
-    if (nav && menuToggle) {
-      nav.classList.remove('active');
-      menuToggle.querySelector('i').className = 'fas fa-bars';
-    }
   }
 
   // Setup navigation links
@@ -246,7 +176,48 @@ function setupNavigation() {
   
   // Listen for hash changes
   window.addEventListener('hashchange', handleHashChange);
-  window.addEventListener('popstate', handleHashChange);
+}
+
+// ======================
+// LOADING SCREEN FIX
+// ======================
+function setupLoadingScreen() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  
+  if (!loadingScreen) return;
+  
+  // Hide loading screen after short delay
+  setTimeout(() => {
+    loadingScreen.classList.add('hidden');
+    setTimeout(() => {
+      loadingScreen.style.display = 'none';
+    }, 500);
+    
+    // Start greeting animation if on home page
+    if (window.location.hash === '#/' || window.location.hash === '' || !window.location.hash) {
+      animateGreetingText();
+    }
+  }, 800);
+}
+
+// Text typing animation
+function animateGreetingText() {
+  const greeting = document.querySelector('.greeting');
+  if (!greeting) return;
+  
+  const originalText = greeting.textContent;
+  greeting.textContent = '';
+  
+  let i = 0;
+  const typeWriter = () => {
+    if (i < originalText.length) {
+      greeting.textContent += originalText.charAt(i);
+      i++;
+      setTimeout(typeWriter, 50);
+    }
+  };
+  
+  setTimeout(typeWriter, 300);
 }
 
 // ======================
@@ -282,15 +253,11 @@ function setupMobileMenu() {
 }
 
 // ======================
-// LOAD PIANO VIDEOS
+// LOAD PIANO VIDEOS - SIMPLIFIED
 // ======================
 async function loadPianoVideos() {
-  console.log('=== LOAD PIANO VIDEOS STARTED ===');
   const container = document.getElementById('pianoVideosContainer');
-  if (!container) {
-    console.error('Piano container not found');
-    return;
-  }
+  if (!container) return;
 
   // Show loading
   container.innerHTML = `
@@ -301,21 +268,16 @@ async function loadPianoVideos() {
   `;
 
   try {
-    // Initialize Firebase
     const firebase = await initializeFirebase();
     if (!firebase) {
       throw new Error('Firebase not available');
     }
     
-    console.log('Firebase loaded for piano:', firebase);
-    
-    // Get Firestore reference
     const db = firebase.db;
     
-    // Get all piano videos
-    const querySnapshot = await db.collection("pianoVideos").orderBy("timestamp", "desc").get();
-    
-    console.log('Piano videos found:', querySnapshot.size);
+    // Get collection reference
+    const pianoVideosRef = db.collection("pianoVideos");
+    const querySnapshot = await pianoVideosRef.orderBy("timestamp", "desc").get();
     
     if (querySnapshot.empty) {
       container.innerHTML = `
@@ -332,8 +294,6 @@ async function loadPianoVideos() {
     querySnapshot.forEach((doc) => {
       const video = doc.data();
       const youtubeId = video.youtubeId || '';
-      
-      console.log('Processing video:', video.pieceName);
       
       if (youtubeId) {
         videosHTML += `
@@ -360,13 +320,12 @@ async function loadPianoVideos() {
 
     if (videosHTML) {
       container.innerHTML = videosHTML;
-      console.log('Piano videos loaded successfully');
     } else {
       container.innerHTML = `
         <div class="no-content">
           <i class="fas fa-music"></i>
           <h3>Piano Performances Coming Soon</h3>
-          <p>I'm currently working on recording my piano performances.</p>
+          <p>Currently working on recordings!</p>
         </div>
       `;
     }
@@ -380,27 +339,17 @@ async function loadPianoVideos() {
         <i class="fas fa-music"></i>
         <h3>Piano Performances</h3>
         <p>Check back soon for piano performances!</p>
-        <div style="margin-top: 2rem;">
-          <h4>🎵 Currently Practicing</h4>
-          <p>• Moonlight Sonata - Beethoven</p>
-          <p>• Clair de Lune - Debussy</p>
-          <p>• River Flows in You - Yiruma</p>
-        </div>
       </div>
     `;
   }
 }
 
 // ======================
-// LOAD BLOGS
+// LOAD BLOGS - SIMPLIFIED
 // ======================
 async function loadBlogs() {
-  console.log('=== LOAD BLOGS STARTED ===');
   const container = document.getElementById('blogsList');
-  if (!container) {
-    console.error('Blogs container not found');
-    return;
-  }
+  if (!container) return;
 
   // Show loading
   container.innerHTML = `
@@ -411,21 +360,14 @@ async function loadBlogs() {
   `;
 
   try {
-    // Initialize Firebase
     const firebase = await initializeFirebase();
     if (!firebase) {
       throw new Error('Firebase not available');
     }
     
-    console.log('Firebase loaded for blogs:', firebase);
-    
-    // Get Firestore reference
     const db = firebase.db;
-    
-    // Get all blogs
-    const querySnapshot = await db.collection("blogs").orderBy("timestamp", "desc").get();
-    
-    console.log('Blogs found:', querySnapshot.size);
+    const blogsRef = db.collection("blogs");
+    const querySnapshot = await blogsRef.orderBy("timestamp", "desc").get();
     
     if (querySnapshot.empty) {
       container.innerHTML = `
@@ -446,15 +388,10 @@ async function loadBlogs() {
       const blogId = doc.id;
       const date = blog.timestamp?.toDate?.() || new Date();
       
-      console.log('Processing blog:', blog.title, 'ID:', blogId);
-      
-      blogsData.push({
-        id: blogId,
-        data: blog
-      });
+      blogsData.push({ id: blogId, data: blog });
       
       blogsHTML += `
-        <div class="content-card blog-card" data-blog-id="${blogId}">
+        <div class="content-card blog-card">
           <div class="blog-content">
             <div class="blog-meta">
               <span class="blog-category">${blog.category || 'General'}</span>
@@ -470,26 +407,20 @@ async function loadBlogs() {
       `;
     });
 
-    // Store blogs data globally for easy access
+    // Store blogs globally
     window.blogsData = blogsData;
     
     // Update HTML
     container.innerHTML = blogsHTML;
-    console.log('Blogs HTML loaded');
     
-    // Add click events to "Read More" buttons
-    setTimeout(() => {
-      const buttons = container.querySelectorAll('.read-more-btn');
-      console.log('Found', buttons.length, 'read more buttons');
-      
-      buttons.forEach(button => {
-        button.addEventListener('click', function() {
-          const blogId = this.getAttribute('data-blog-id');
-          console.log('Read More clicked for:', blogId);
-          viewBlog(blogId);
-        });
+    // Add click events
+    const buttons = container.querySelectorAll('.read-more-btn');
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        const blogId = this.getAttribute('data-blog-id');
+        viewBlog(blogId);
       });
-    }, 100);
+    });
 
   } catch (error) {
     console.error('Error loading blogs:', error);
@@ -499,13 +430,7 @@ async function loadBlogs() {
       <div class="no-content">
         <i class="fas fa-blog"></i>
         <h3>Blog Posts Coming Soon</h3>
-        <p>I'm working on some exciting blog posts.</p>
-        <div style="margin-top: 2rem;">
-          <h4>📝 Upcoming Topics</h4>
-          <p>• Learning Web Development Journey</p>
-          <p>• Piano Practice Tips for Beginners</p>
-          <p>• Balancing Studies with Creative Pursuits</p>
-        </div>
+        <p>Working on exciting blog posts!</p>
       </div>
     `;
   }
@@ -515,20 +440,17 @@ async function loadBlogs() {
 // VIEW BLOG DETAILS
 // ======================
 async function viewBlog(blogId) {
-  console.log('=== VIEW BLOG STARTED === ID:', blogId);
-  
   try {
-    // First try to get from cached data
+    // Try cached data first
     if (window.blogsData) {
-      const blog = window.blogsData.find(b => b.id === blogId);
-      if (blog) {
-        console.log('Blog found in cache:', blog.data.title);
-        showBlogModal(blog.data);
+      const cachedBlog = window.blogsData.find(b => b.id === blogId);
+      if (cachedBlog) {
+        showBlogModal(cachedBlog.data);
         return;
       }
     }
     
-    // If not in cache, fetch from Firebase
+    // Fetch from Firebase
     const firebase = await initializeFirebase();
     if (!firebase) {
       showErrorToast('Cannot connect to database.');
@@ -540,9 +462,7 @@ async function viewBlog(blogId) {
     const docSnap = await docRef.get();
     
     if (docSnap.exists()) {
-      const blog = docSnap.data();
-      console.log('Blog loaded from Firebase:', blog.title);
-      showBlogModal(blog);
+      showBlogModal(docSnap.data());
     } else {
       showErrorToast('Blog post not found!');
     }
@@ -553,20 +473,16 @@ async function viewBlog(blogId) {
 }
 
 // ======================
-// SHOW BLOG MODAL
+// BLOG MODAL
 // ======================
 function showBlogModal(blogData) {
-  console.log('Showing blog modal:', blogData.title);
   soundManager.play();
   
   const blogModal = document.getElementById('blogModal');
   const blogModalTitle = document.getElementById('blogModalTitle');
   const blogModalContent = document.getElementById('blogModalContent');
   
-  if (!blogModal || !blogModalTitle || !blogModalContent) {
-    console.error('Blog modal elements missing');
-    return;
-  }
+  if (!blogModal || !blogModalTitle || !blogModalContent) return;
   
   // Set title
   blogModalTitle.textContent = blogData.title || 'Blog Post';
@@ -579,7 +495,7 @@ function showBlogModal(blogData) {
     }
   } catch (e) {}
   
-  // Create HTML content
+  // Create HTML
   const blogHTML = `
     <div class="blog-modal-meta">
       <span class="blog-modal-category">${blogData.category || 'General'}</span>
@@ -604,7 +520,6 @@ function showBlogModal(blogData) {
     </div>
   `;
   
-  // Update modal
   blogModalContent.innerHTML = blogHTML;
   
   // Add event listeners
@@ -657,14 +572,12 @@ function setupBlogModal() {
   
   if (!blogModal || !blogModalClose) return;
   
-  // Close button
   blogModalClose.addEventListener('click', () => {
     soundManager.play();
     blogModal.classList.remove('active');
     document.body.style.overflow = 'auto';
   });
   
-  // Close on escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && blogModal.classList.contains('active')) {
       blogModal.classList.remove('active');
@@ -672,7 +585,6 @@ function setupBlogModal() {
     }
   });
   
-  // Close on outside click
   blogModal.addEventListener('click', (e) => {
     if (e.target === blogModal) {
       blogModal.classList.remove('active');
@@ -710,9 +622,12 @@ function showErrorToast(message) {
 // INITIALIZE EVERYTHING
 // ======================
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('=== PORTFOLIO INITIALIZING ===');
+  console.log('Portfolio loading...');
   
-  // Setup features
+  // Setup loading screen first
+  setupLoadingScreen();
+  
+  // Setup other features
   setupNavigation();
   setupMobileMenu();
   setupBlogModal();
@@ -722,8 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.loadBlogs = loadBlogs;
   window.viewBlog = viewBlog;
   window.showBlogModal = showBlogModal;
-  window.showErrorToast = showErrorToast;
   window.soundManager = soundManager;
   
-  console.log('=== PORTFOLIO INITIALIZED ===');
+  console.log('Portfolio ready!');
 });
