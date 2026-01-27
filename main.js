@@ -96,6 +96,46 @@ const soundManager = {
   }
 };
 
+// Debug function to check data structure
+async function debugFirebaseData() {
+  console.log('🔍 DEBUG: Checking Firebase data structure...');
+  
+  try {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
+    const { getFirestore, collection, getDocs } = 
+      await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    // Check piano videos
+    const pianoSnapshot = await getDocs(collection(db, "pianoVideos"));
+    console.log('🎹 Piano Videos:');
+    pianoSnapshot.forEach((doc) => {
+      console.log(`  ID: ${doc.id}`);
+      console.log('  Data:', doc.data());
+      console.log('  Fields:', Object.keys(doc.data()));
+    });
+    
+    // Check blogs
+    const blogSnapshot = await getDocs(collection(db, "blogs"));
+    console.log('📝 Blogs:');
+    blogSnapshot.forEach((doc) => {
+      console.log(`  ID: ${doc.id}`);
+      console.log('  Data:', doc.data());
+      console.log('  Fields:', Object.keys(doc.data()));
+    });
+    
+    alert('✅ Check console for data structure');
+    
+  } catch (error) {
+    console.error('❌ Debug failed:', error);
+  }
+}
+
+// Make it globally available
+window.debugFirebaseData = debugFirebaseData;
+
 // ======================
 // PAGE NAVIGATION SYSTEM - SIMPLIFIED
 // ======================
@@ -626,4 +666,5 @@ document.addEventListener('DOMContentLoaded', () => {
   
   console.log('Portfolio ready!');
 });
+
 
