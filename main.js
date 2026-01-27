@@ -252,13 +252,14 @@ function setupMobileMenu() {
   });
 }
 
-// ======================
-// LOAD PIANO VIDEOS - SIMPLIFIED
-// ======================
 async function loadPianoVideos() {
+  console.log('🎹 Loading piano videos...');
   const container = document.getElementById('pianoVideosContainer');
-  if (!container) return;
-
+  if (!container) {
+    console.error('❌ Piano container not found');
+    return;
+  }
+  
   // Show loading
   container.innerHTML = `
     <div class="loading-state">
@@ -266,18 +267,25 @@ async function loadPianoVideos() {
       <p>Loading piano performances...</p>
     </div>
   `;
-
+  
   try {
-    const firebase = await initializeFirebase();
-    if (!firebase) {
-      throw new Error('Firebase not available');
-    }
+    // Get Firebase functions
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
+    const { getFirestore, collection, getDocs, query, orderBy } = 
+      await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
     
-    const db = firebase.db;
+    // Initialize app
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
     
-    // Get collection reference
-    const pianoVideosRef = db.collection("pianoVideos");
-    const querySnapshot = await pianoVideosRef.orderBy("timestamp", "desc").get();
+    console.log('✅ Firebase connected, fetching videos...');
+    
+    // Query pianoVideos collection
+    const videosCollection = collection(db, 'pianoVideos');
+    const videosQuery = query(videosCollection, orderBy('timestamp', 'desc'));
+    const querySnapshot = await getDocs(videosQuery);
+    
+    console.log(`📊 Found ${querySnapshot.size} videos`);
     
     if (querySnapshot.empty) {
       container.innerHTML = `
@@ -289,68 +297,99 @@ async function loadPianoVideos() {
       `;
       return;
     }
-
+    
     let videosHTML = '';
+    
+    // Loop through each document
     querySnapshot.forEach((doc) => {
       const video = doc.data();
-      const youtubeId = video.youtubeId || '';
+      console.log('🎬 Processing video:', video);
+      
+      // Check what fields exist in your data
+      console.log('Video fields:', Object.keys(video));
+      
+      // Get YouTube ID (check different possible field names)
+      const youtubeId = video.youtubeId || video.link || video.url || '';
+      console.log('YouTube ID:', youtubeId);
       
       if (youtubeId) {
+        // Extract just the ID if it's a full URL
+        let cleanYoutubeId = youtubeId;
+        if (youtubeId.includes('youtube.com')) {
+          const match = youtubeId.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+          cleanYoutubeId = match ? match[1] : youtubeId;
+        }
+        
         videosHTML += `
           <div class="video-card">
             <div class="video-player">
               <iframe 
-                src="https://www.youtube.com/embed/${youtubeId}" 
+                src="https://www.youtube.com/embed/${cleanYoutubeId}" 
                 frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen
                 loading="lazy"
               ></iframe>
             </div>
             <div class="video-info">
-              <h3>${video.pieceName || 'Untitled Piece'}</h3>
+              <h3>${video.pieceName || video.title || video.name || 'Untitled Piece'}</h3>
               <div class="video-meta">
-                <span><i class="fas fa-user"></i> ${video.playedBy || 'Unknown'}</span>
-                <span><i class="fas fa-music"></i> ${video.composer || 'Unknown'}</span>
+                <span><i class="fas fa-user"></i> ${video.playedBy || video.artist || video.player || 'Unknown'}</span>
+                <span><i class="fas fa-music"></i> ${video.composer || video.composerName || 'Unknown'}</span>
+              </div>
+              <div style="margin-top: 10px; font-size: 0.9rem; color: #888;">
+                ${video.description || ''}
               </div>
             </div>
           </div>
         `;
       }
     });
-
+    
     if (videosHTML) {
       container.innerHTML = videosHTML;
+      console.log('✅ Piano videos displayed successfully');
     } else {
       container.innerHTML = `
         <div class="no-content">
-          <i class="fas fa-music"></i>
-          <h3>Piano Performances Coming Soon</h3>
-          <p>Currently working on recordings!</p>
+          <i class="fas fa-exclamation-circle"></i>
+          <h3>No Videos Available</h3>
+          <p>Found ${querySnapshot.size} video(s) but couldn't display them.</p>
+          <p>Check your data structure in Firebase.</p>
+          <button onclick="loadPianoVideos()" style="margin-top: 15px; padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Retry
+          </button>
         </div>
       `;
     }
-
-  } catch (error) {
-    console.error('Error loading piano videos:', error);
     
-    // Fallback content
+  } catch (error) {
+    console.error('❌ Error loading piano videos:', error);
+    
     container.innerHTML = `
       <div class="no-content">
-        <i class="fas fa-music"></i>
-        <h3>Piano Performances</h3>
-        <p>Check back soon for piano performances!</p>
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Error Loading Videos</h3>
+        <p>${error.message}</p>
+        <pre style="text-align: left; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 0.8rem;">
+${error.stack}
+        </pre>
+        <button onclick="loadPianoVideos()" style="margin-top: 15px; padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Try Again
+        </button>
       </div>
     `;
   }
 }
 
-// ======================
-// LOAD BLOGS - SIMPLIFIED
-// ======================
 async function loadBlogs() {
+  console.log('📝 Loading blogs...');
   const container = document.getElementById('blogsList');
-  if (!container) return;
-
+  if (!container) {
+    console.error('❌ Blogs container not found');
+    return;
+  }
+  
   // Show loading
   container.innerHTML = `
     <div class="loading-state">
@@ -358,16 +397,25 @@ async function loadBlogs() {
       <p>Loading blog posts...</p>
     </div>
   `;
-
+  
   try {
-    const firebase = await initializeFirebase();
-    if (!firebase) {
-      throw new Error('Firebase not available');
-    }
+    // Get Firebase functions
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
+    const { getFirestore, collection, getDocs, query, orderBy } = 
+      await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
     
-    const db = firebase.db;
-    const blogsRef = db.collection("blogs");
-    const querySnapshot = await blogsRef.orderBy("timestamp", "desc").get();
+    // Initialize app
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    console.log('✅ Firebase connected, fetching blogs...');
+    
+    // Query blogs collection
+    const blogsCollection = collection(db, 'blogs');
+    const blogsQuery = query(blogsCollection, orderBy('timestamp', 'desc'));
+    const querySnapshot = await getDocs(blogsQuery);
+    
+    console.log(`📊 Found ${querySnapshot.size} blogs`);
     
     if (querySnapshot.empty) {
       container.innerHTML = `
@@ -379,190 +427,127 @@ async function loadBlogs() {
       `;
       return;
     }
-
-    let blogsHTML = '';
-    const blogsData = [];
     
+    let blogsHTML = '';
+    window.blogsData = []; // Store for "Read More"
+    
+    // Loop through each document
     querySnapshot.forEach((doc) => {
       const blog = doc.data();
       const blogId = doc.id;
-      const date = blog.timestamp?.toDate?.() || new Date();
       
-      blogsData.push({ id: blogId, data: blog });
+      console.log('📄 Processing blog:', blog);
+      console.log('Blog fields:', Object.keys(blog));
+      
+      // Format date
+      let displayDate = 'Recently';
+      try {
+        if (blog.timestamp && blog.timestamp.toDate) {
+          displayDate = blog.timestamp.toDate().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+        } else if (blog.timestamp && blog.timestamp.seconds) {
+          displayDate = new Date(blog.timestamp.seconds * 1000).toLocaleDateString();
+        } else if (blog.date) {
+          displayDate = blog.date;
+        }
+      } catch (e) {
+        console.log('Date formatting error:', e);
+      }
+      
+      // Store for "Read More"
+      window.blogsData.push({
+        id: blogId,
+        data: blog
+      });
       
       blogsHTML += `
         <div class="content-card blog-card">
           <div class="blog-content">
             <div class="blog-meta">
-              <span class="blog-category">${blog.category || 'General'}</span>
-              <span class="blog-date">${date.toLocaleDateString()}</span>
+              <span class="blog-category">${blog.category || blog.type || 'General'}</span>
+              <span class="blog-date">${displayDate}</span>
             </div>
-            <h3 class="blog-title">${blog.title || 'Untitled Post'}</h3>
-            <p class="blog-excerpt">${blog.excerpt || 'No excerpt available.'}</p>
-            <button class="read-more-btn" data-blog-id="${blogId}">
+            <h3 class="blog-title">${blog.title || blog.name || 'Untitled Post'}</h3>
+            <p class="blog-excerpt">${blog.excerpt || blog.description || blog.content?.substring(0, 150) || 'No excerpt available.'}...</p>
+            <button class="read-more-btn" data-blog-id="${blogId}" onclick="viewBlog('${blogId}')">
               Read More <i class="fas fa-arrow-right"></i>
             </button>
           </div>
         </div>
       `;
     });
-
-    // Store blogs globally
-    window.blogsData = blogsData;
     
-    // Update HTML
     container.innerHTML = blogsHTML;
+    console.log('✅ Blogs displayed successfully');
     
-    // Add click events
-    const buttons = container.querySelectorAll('.read-more-btn');
-    buttons.forEach(button => {
-      button.addEventListener('click', function() {
-        const blogId = this.getAttribute('data-blog-id');
-        viewBlog(blogId);
+    // Add event listeners (alternative method)
+    setTimeout(() => {
+      const buttons = container.querySelectorAll('.read-more-btn');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          const blogId = this.getAttribute('data-blog-id');
+          viewBlog(blogId);
+        });
       });
-    });
-
-  } catch (error) {
-    console.error('Error loading blogs:', error);
+    }, 100);
     
-    // Fallback content
+  } catch (error) {
+    console.error('❌ Error loading blogs:', error);
+    
     container.innerHTML = `
       <div class="no-content">
-        <i class="fas fa-blog"></i>
-        <h3>Blog Posts Coming Soon</h3>
-        <p>Working on exciting blog posts!</p>
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Error Loading Blogs</h3>
+        <p>${error.message}</p>
+        <button onclick="loadBlogs()" style="margin-top: 15px; padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Try Again
+        </button>
       </div>
     `;
   }
 }
 
-// ======================
-// VIEW BLOG DETAILS
-// ======================
 async function viewBlog(blogId) {
+  console.log('👁️ Viewing blog:', blogId);
+  
   try {
     // Try cached data first
     if (window.blogsData) {
       const cachedBlog = window.blogsData.find(b => b.id === blogId);
       if (cachedBlog) {
+        console.log('📖 Using cached blog:', cachedBlog.data.title);
         showBlogModal(cachedBlog.data);
         return;
       }
     }
     
-    // Fetch from Firebase
-    const firebase = await initializeFirebase();
-    if (!firebase) {
-      showErrorToast('Cannot connect to database.');
-      return;
-    }
+    // Fetch fresh from Firebase
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
+    const { getFirestore, doc, getDoc } = 
+      await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
     
-    const db = firebase.db;
-    const docRef = db.collection("blogs").doc(blogId);
-    const docSnap = await docRef.get();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    const docRef = doc(db, 'blogs', blogId);
+    const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
-      showBlogModal(docSnap.data());
+      const blog = docSnap.data();
+      console.log('✅ Blog loaded:', blog.title);
+      showBlogModal(blog);
     } else {
-      showErrorToast('Blog post not found!');
+      alert('❌ Blog post not found!');
     }
+    
   } catch (error) {
-    console.error('Error viewing blog:', error);
-    showErrorToast('Error loading blog post.');
+    console.error('❌ Error viewing blog:', error);
+    alert('Error loading blog: ' + error.message);
   }
 }
-
-// ======================
-// BLOG MODAL
-// ======================
-function showBlogModal(blogData) {
-  soundManager.play();
-  
-  const blogModal = document.getElementById('blogModal');
-  const blogModalTitle = document.getElementById('blogModalTitle');
-  const blogModalContent = document.getElementById('blogModalContent');
-  
-  if (!blogModal || !blogModalTitle || !blogModalContent) return;
-  
-  // Set title
-  blogModalTitle.textContent = blogData.title || 'Blog Post';
-  
-  // Format date
-  let displayDate = 'Recently';
-  try {
-    if (blogData.timestamp?.toDate) {
-      displayDate = blogData.timestamp.toDate().toLocaleDateString();
-    }
-  } catch (e) {}
-  
-  // Create HTML
-  const blogHTML = `
-    <div class="blog-modal-meta">
-      <span class="blog-modal-category">${blogData.category || 'General'}</span>
-      <span class="blog-modal-date">
-        <i class="far fa-calendar"></i> ${displayDate}
-      </span>
-    </div>
-    
-    <div class="blog-modal-body">
-      ${blogData.content ? blogData.content.replace(/\n/g, '<br>') : 'No content available.'}
-    </div>
-    
-    <div class="blog-modal-footer">
-      <div class="blog-modal-actions">
-        <button class="blog-modal-like">
-          <i class="far fa-heart"></i> Like
-        </button>
-        <button class="blog-modal-share">
-          <i class="fas fa-share-alt"></i> Share
-        </button>
-      </div>
-    </div>
-  `;
-  
-  blogModalContent.innerHTML = blogHTML;
-  
-  // Add event listeners
-  setTimeout(() => {
-    const likeBtn = blogModalContent.querySelector('.blog-modal-like');
-    const shareBtn = blogModalContent.querySelector('.blog-modal-share');
-    
-    if (likeBtn) {
-      likeBtn.addEventListener('click', () => {
-        soundManager.play();
-        likeBtn.classList.toggle('liked');
-        likeBtn.innerHTML = likeBtn.classList.contains('liked') 
-          ? '<i class="fas fa-heart"></i> Liked'
-          : '<i class="far fa-heart"></i> Like';
-      });
-    }
-    
-    if (shareBtn) {
-      shareBtn.addEventListener('click', () => {
-        soundManager.play();
-        if (navigator.share) {
-          navigator.share({
-            title: blogData.title,
-            text: blogData.excerpt || blogData.title,
-            url: window.location.href,
-          });
-        } else {
-          navigator.clipboard.writeText(window.location.href);
-          const originalText = shareBtn.innerHTML;
-          shareBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-          setTimeout(() => {
-            shareBtn.innerHTML = originalText;
-          }, 2000);
-        }
-      });
-    }
-  }, 100);
-  
-  // Show modal
-  blogModal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
 // ======================
 // BLOG MODAL SETUP
 // ======================
@@ -641,3 +626,4 @@ document.addEventListener('DOMContentLoaded', () => {
   
   console.log('Portfolio ready!');
 });
+
