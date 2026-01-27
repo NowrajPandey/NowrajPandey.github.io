@@ -26,6 +26,32 @@ function setupLoadingScreen() {
 }
 
 // ======================
+// SOUND MANAGER
+// ======================
+const soundManager = {
+  get enabled() {
+    const v = localStorage.getItem('soundEnabled');
+    return v === null ? true : v === 'true';
+  },
+  set enabled(val) {
+    localStorage.setItem('soundEnabled', String(!!val));
+  }
+};
+window.soundManager = soundManager;
+
+function setupSoundToggle() {
+  const btn = document.getElementById('soundToggle');
+  if (!btn || typeof window.Sounds === 'undefined') return;
+  if (window.Sounds.init) window.Sounds.init();
+  btn.classList.toggle('muted', !soundManager.enabled);
+  btn.addEventListener('click', () => {
+    soundManager.enabled = !soundManager.enabled;
+    btn.classList.toggle('muted', !soundManager.enabled);
+    if (soundManager.enabled) window.Sounds.playClick();
+  });
+}
+
+// ======================
 // PAGE NAVIGATION
 // ======================
 function setupNavigation() {
@@ -77,6 +103,7 @@ function setupNavigation() {
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
       e.preventDefault();
+      if (window.Sounds && window.Sounds.playClick) window.Sounds.playClick();
       window.location.hash = this.getAttribute('href');
     });
   });
@@ -105,6 +132,7 @@ function updateBlogProgress() {
 function closeBlogModal() {
   const modal = document.getElementById('blogModal');
   if (!modal) return;
+  if (window.Sounds && window.Sounds.playSoft) window.Sounds.playSoft();
   modal.classList.remove('active');
   document.body.style.overflow = 'auto';
   if (blogScrollableEl && blogProgressHandler) {
@@ -233,6 +261,7 @@ function showBlogModal(blogData) {
     
     if (likeBtn) {
       likeBtn.addEventListener('click', () => {
+        if (window.Sounds && window.Sounds.playSoft) window.Sounds.playSoft();
         likeBtn.classList.toggle('liked');
         likeBtn.innerHTML = likeBtn.classList.contains('liked') 
           ? '<i class="fas fa-heart"></i> Liked'
@@ -242,6 +271,7 @@ function showBlogModal(blogData) {
     
     if (shareBtn) {
       shareBtn.addEventListener('click', () => {
+        if (window.Sounds && window.Sounds.playClick) window.Sounds.playClick();
         if (navigator.share) {
           navigator.share({
             title: blogData.title,
@@ -484,7 +514,7 @@ async function loadBlogs() {
 // ======================
 async function viewBlog(blogId) {
   console.log('👁️ Viewing blog:', blogId);
-  
+  if (window.Sounds && window.Sounds.playClick) window.Sounds.playClick();
   try {
     // Try cached data first
     if (window.blogsData) {
@@ -526,8 +556,8 @@ async function viewBlog(blogId) {
 // ======================
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Portfolio initializing...');
-  
-  // Setup features
+  if (window.Sounds && window.Sounds.init) window.Sounds.init();
+  setupSoundToggle();
   setupLoadingScreen();
   setupNavigation();
   setupBlogModal();
