@@ -12,135 +12,23 @@ const firebaseConfig = {
   appId: "1:1095561283748:web:9b1a7735fa787dded2be31"
 };
 
-// Global Firebase instance
-let firebaseModules = null;
-
 // ======================
-// FIXED FIREBASE INITIALIZATION
+// LOADING SCREEN
 // ======================
-async function initializeFirebase() {
-  if (firebaseModules) {
-    return firebaseModules;
-  }
-  
-  try {
-    // Try direct import (most reliable)
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
-    const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
-    
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    firebaseModules = {
-      app: app,
-      db: db
-    };
-    
-    console.log('Firebase initialized via import');
-    return firebaseModules;
-    
-  } catch (error) {
-    console.error('Firebase import failed:', error);
-    
-    // Try global firebase
-    try {
-      if (window.firebase) {
-        const app = window.firebase.initializeApp(firebaseConfig);
-        const db = window.firebase.firestore();
-        
-        firebaseModules = {
-          app: app,
-          db: db
-        };
-        
-        console.log('Firebase initialized via global');
-        return firebaseModules;
-      }
-    } catch (globalError) {
-      console.error('Global Firebase also failed:', globalError);
+function setupLoadingScreen() {
+  setTimeout(() => {
+    const loading = document.getElementById('loadingScreen');
+    if (loading) {
+      loading.classList.add('hidden');
+      setTimeout(() => loading.style.display = 'none', 500);
     }
-    
-    return null;
-  }
+  }, 800);
 }
 
 // ======================
-// SIMPLE SOUND MANAGER
-// ======================
-const soundManager = {
-  enabled: true,
-  play() {
-    if (this.enabled) {
-      // Simple click sound
-      try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 800;
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-      } catch (e) {
-        // Silent fail
-      }
-    }
-  }
-};
-
-// Debug function to check data structure
-async function debugFirebaseData() {
-  console.log('🔍 DEBUG: Checking Firebase data structure...');
-  
-  try {
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
-    const { getFirestore, collection, getDocs } = 
-      await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
-    
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    
-    // Check piano videos
-    const pianoSnapshot = await getDocs(collection(db, "pianoVideos"));
-    console.log('🎹 Piano Videos:');
-    pianoSnapshot.forEach((doc) => {
-      console.log(`  ID: ${doc.id}`);
-      console.log('  Data:', doc.data());
-      console.log('  Fields:', Object.keys(doc.data()));
-    });
-    
-    // Check blogs
-    const blogSnapshot = await getDocs(collection(db, "blogs"));
-    console.log('📝 Blogs:');
-    blogSnapshot.forEach((doc) => {
-      console.log(`  ID: ${doc.id}`);
-      console.log('  Data:', doc.data());
-      console.log('  Fields:', Object.keys(doc.data()));
-    });
-    
-    alert('✅ Check console for data structure');
-    
-  } catch (error) {
-    console.error('❌ Debug failed:', error);
-  }
-}
-
-// Make it globally available
-window.debugFirebaseData = debugFirebaseData;
-
-// ======================
-// PAGE NAVIGATION SYSTEM - SIMPLIFIED
+// PAGE NAVIGATION
 // ======================
 function setupNavigation() {
-  // Show a specific page
   function showPage(pageId) {
     // Hide all pages
     document.querySelectorAll('.page-content').forEach(page => {
@@ -148,34 +36,23 @@ function setupNavigation() {
       page.classList.remove('active');
     });
     
-    // Show selected page
+    // Show target page
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
       targetPage.style.display = 'block';
-      setTimeout(() => {
-        targetPage.classList.add('active');
-      }, 10);
+      setTimeout(() => targetPage.classList.add('active'), 10);
       
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      // Load content based on page
+      // Load content
       if (pageId === 'piano-content') {
-        setTimeout(() => {
-          loadPianoVideos();
-        }, 100);
+        setTimeout(loadPianoVideos, 100);
       } else if (pageId === 'blogs-content') {
-        setTimeout(() => {
-          loadBlogs();
-        }, 100);
+        setTimeout(loadBlogs, 100);
       }
     }
   }
-
-  // Handle URL hash changes
+  
   function handleHashChange() {
     const hash = window.location.hash.substring(2);
-    
     const pageMap = {
       '': 'home-content',
       'piano': 'piano-content',
@@ -184,10 +61,9 @@ function setupNavigation() {
       'goals': 'goals-content'
     };
     
-    const pageId = pageMap[hash] || 'home-content';
-    showPage(pageId);
+    showPage(pageMap[hash] || 'home-content');
     
-    // Update active nav links
+    // Update active nav
     document.querySelectorAll('.nav-link').forEach(link => {
       link.classList.remove('active');
       const linkHash = link.getAttribute('href').substring(2);
@@ -196,111 +72,190 @@ function setupNavigation() {
       }
     });
   }
-
-  // Setup navigation links
+  
+  // Setup nav links
   document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function(e) {
       e.preventDefault();
-      soundManager.play();
-      const href = this.getAttribute('href');
-      window.location.hash = href;
+      window.location.hash = this.getAttribute('href');
     });
   });
-
-  // Initial page load
-  if (!window.location.hash || window.location.hash === '#') {
-    window.location.hash = '#/';
-  }
   
+  // Initial setup
+  if (!window.location.hash) window.location.hash = '#/';
   handleHashChange();
-  
-  // Listen for hash changes
   window.addEventListener('hashchange', handleHashChange);
 }
 
 // ======================
-// LOADING SCREEN FIX
+// BLOG MODAL SETUP
 // ======================
-function setupLoadingScreen() {
-  const loadingScreen = document.getElementById('loadingScreen');
+function setupBlogModal() {
+  const modal = document.getElementById('blogModal');
+  const closeBtn = document.getElementById('blogModalClose');
   
-  if (!loadingScreen) return;
+  if (!modal || !closeBtn) return;
   
-  // Hide loading screen after short delay
-  setTimeout(() => {
-    loadingScreen.classList.add('hidden');
-    setTimeout(() => {
-      loadingScreen.style.display = 'none';
-    }, 500);
-    
-    // Start greeting animation if on home page
-    if (window.location.hash === '#/' || window.location.hash === '' || !window.location.hash) {
-      animateGreetingText();
-    }
-  }, 800);
-}
-
-// Text typing animation
-function animateGreetingText() {
-  const greeting = document.querySelector('.greeting');
-  if (!greeting) return;
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  });
   
-  const originalText = greeting.textContent;
-  greeting.textContent = '';
-  
-  let i = 0;
-  const typeWriter = () => {
-    if (i < originalText.length) {
-      greeting.textContent += originalText.charAt(i);
-      i++;
-      setTimeout(typeWriter, 50);
-    }
-  };
-  
-  setTimeout(typeWriter, 300);
-}
-
-// ======================
-// MOBILE MENU
-// ======================
-function setupMobileMenu() {
-  const menuToggle = document.getElementById('menuToggle');
-  const nav = document.querySelector('.nav');
-  
-  if (!menuToggle || !nav) return;
-  
-  menuToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    soundManager.play();
-    
-    nav.classList.toggle('active');
-    const icon = menuToggle.querySelector('i');
-    if (icon) {
-      icon.className = nav.classList.contains('active') 
-        ? 'fas fa-times' 
-        : 'fas fa-bars';
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
     }
   });
   
-  // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
-      nav.classList.remove('active');
-      const icon = menuToggle.querySelector('i');
-      if (icon) icon.className = 'fas fa-bars';
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
     }
   });
 }
 
-async function loadPianoVideos() {
-  console.log('🎹 Loading piano videos...');
-  const container = document.getElementById('pianoVideosContainer');
-  if (!container) {
-    console.error('❌ Piano container not found');
+// ======================
+// SHOW BLOG MODAL FUNCTION
+// ======================
+function showBlogModal(blogData) {
+  console.log('📖 Showing blog modal:', blogData.title);
+  
+  const blogModal = document.getElementById('blogModal');
+  const blogModalTitle = document.getElementById('blogModalTitle');
+  const blogModalContent = document.getElementById('blogModalContent');
+  
+  if (!blogModal || !blogModalTitle || !blogModalContent) {
+    console.error('❌ Blog modal elements not found');
     return;
   }
   
-  // Show loading
+  // Set title
+  blogModalTitle.textContent = blogData.title || 'Blog Post';
+  
+  // Format date
+  let displayDate = 'Recently';
+  try {
+    if (blogData.timestamp && blogData.timestamp.toDate) {
+      displayDate = blogData.timestamp.toDate().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } else if (blogData.timestamp && blogData.timestamp.seconds) {
+      displayDate = new Date(blogData.timestamp.seconds * 1000).toLocaleDateString();
+    } else if (blogData.date) {
+      displayDate = blogData.date;
+    }
+  } catch (e) {
+    console.log('Date formatting error:', e);
+  }
+  
+  // Create blog content HTML
+  const blogHTML = `
+    ${blogData.image ? `
+      <div class="blog-modal-hero-image">
+        <img src="${blogData.image}" alt="${blogData.title}" loading="lazy">
+      </div>
+    ` : ''}
+    
+    <div class="blog-modal-meta">
+      <span class="blog-modal-category">${blogData.category || blogData.type || 'General'}</span>
+      <span class="blog-modal-date">
+        <i class="far fa-calendar"></i> ${displayDate}
+      </span>
+      ${blogData.author ? `
+        <span class="blog-modal-author">
+          <i class="far fa-user"></i>
+          ${blogData.author}
+        </span>
+      ` : ''}
+    </div>
+    
+    <div class="blog-modal-body">
+      ${blogData.content ? 
+        blogData.content
+          .replace(/\n\n/g, '</p><p>')
+          .replace(/\n/g, '<br>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        : 'No content available.'}
+    </div>
+    
+    ${blogData.tags && blogData.tags.length > 0 ? `
+      <div class="blog-modal-footer">
+        <div class="blog-modal-tags">
+          ${blogData.tags.map(tag => `
+            <span class="blog-modal-tag">${tag}</span>
+          `).join('')}
+        </div>
+        <div class="blog-modal-actions">
+          <button class="blog-modal-like">
+            <i class="far fa-heart"></i> Like
+          </button>
+          <button class="blog-modal-share">
+            <i class="fas fa-share-alt"></i> Share
+          </button>
+        </div>
+      </div>
+    ` : ''}
+  `;
+  
+  // Update modal content
+  blogModalContent.innerHTML = blogHTML;
+  
+  // Add event listeners for like/share buttons
+  setTimeout(() => {
+    const likeBtn = blogModalContent.querySelector('.blog-modal-like');
+    const shareBtn = blogModalContent.querySelector('.blog-modal-share');
+    
+    if (likeBtn) {
+      likeBtn.addEventListener('click', () => {
+        likeBtn.classList.toggle('liked');
+        likeBtn.innerHTML = likeBtn.classList.contains('liked') 
+          ? '<i class="fas fa-heart"></i> Liked'
+          : '<i class="far fa-heart"></i> Like';
+      });
+    }
+    
+    if (shareBtn) {
+      shareBtn.addEventListener('click', () => {
+        if (navigator.share) {
+          navigator.share({
+            title: blogData.title,
+            text: blogData.excerpt || blogData.title,
+            url: window.location.href,
+          });
+        } else {
+          // Fallback: Copy to clipboard
+          navigator.clipboard.writeText(window.location.href);
+          const originalText = shareBtn.innerHTML;
+          shareBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          setTimeout(() => {
+            shareBtn.innerHTML = originalText;
+          }, 2000);
+        }
+      });
+    }
+  }, 100);
+  
+  // Show modal
+  blogModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  // Reset scroll position
+  blogModalContent.scrollTop = 0;
+}
+
+// ======================
+// LOAD PIANO VIDEOS
+// ======================
+async function loadPianoVideos() {
+  console.log('🎹 Loading piano videos...');
+  const container = document.getElementById('pianoVideosContainer');
+  if (!container) return;
+  
   container.innerHTML = `
     <div class="loading-state">
       <i class="fas fa-spinner fa-spin"></i>
@@ -309,18 +264,15 @@ async function loadPianoVideos() {
   `;
   
   try {
-    // Get Firebase functions
     const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
     const { getFirestore, collection, getDocs, query, orderBy } = 
       await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
     
-    // Initialize app
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     
     console.log('✅ Firebase connected, fetching videos...');
     
-    // Query pianoVideos collection
     const videosCollection = collection(db, 'pianoVideos');
     const videosQuery = query(videosCollection, orderBy('timestamp', 'desc'));
     const querySnapshot = await getDocs(videosQuery);
@@ -340,20 +292,11 @@ async function loadPianoVideos() {
     
     let videosHTML = '';
     
-    // Loop through each document
     querySnapshot.forEach((doc) => {
       const video = doc.data();
-      console.log('🎬 Processing video:', video);
-      
-      // Check what fields exist in your data
-      console.log('Video fields:', Object.keys(video));
-      
-      // Get YouTube ID (check different possible field names)
       const youtubeId = video.youtubeId || video.link || video.url || '';
-      console.log('YouTube ID:', youtubeId);
       
       if (youtubeId) {
-        // Extract just the ID if it's a full URL
         let cleanYoutubeId = youtubeId;
         if (youtubeId.includes('youtube.com')) {
           const match = youtubeId.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
@@ -366,19 +309,15 @@ async function loadPianoVideos() {
               <iframe 
                 src="https://www.youtube.com/embed/${cleanYoutubeId}" 
                 frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen
                 loading="lazy"
               ></iframe>
             </div>
             <div class="video-info">
-              <h3>${video.pieceName || video.title || video.name || 'Untitled Piece'}</h3>
+              <h3>${video.pieceName || video.title || 'Untitled Piece'}</h3>
               <div class="video-meta">
-                <span><i class="fas fa-user"></i> ${video.playedBy || video.artist || video.player || 'Unknown'}</span>
-                <span><i class="fas fa-music"></i> ${video.composer || video.composerName || 'Unknown'}</span>
-              </div>
-              <div style="margin-top: 10px; font-size: 0.9rem; color: #888;">
-                ${video.description || ''}
+                <span><i class="fas fa-user"></i> ${video.playedBy || 'Unknown'}</span>
+                <span><i class="fas fa-music"></i> ${video.composer || 'Unknown'}</span>
               </div>
             </div>
           </div>
@@ -392,13 +331,9 @@ async function loadPianoVideos() {
     } else {
       container.innerHTML = `
         <div class="no-content">
-          <i class="fas fa-exclamation-circle"></i>
-          <h3>No Videos Available</h3>
-          <p>Found ${querySnapshot.size} video(s) but couldn't display them.</p>
-          <p>Check your data structure in Firebase.</p>
-          <button onclick="loadPianoVideos()" style="margin-top: 15px; padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Retry
-          </button>
+          <i class="fas fa-music"></i>
+          <h3>Piano Performances Coming Soon</h3>
+          <p>Currently working on recordings!</p>
         </div>
       `;
     }
@@ -408,29 +343,22 @@ async function loadPianoVideos() {
     
     container.innerHTML = `
       <div class="no-content">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Error Loading Videos</h3>
-        <p>${error.message}</p>
-        <pre style="text-align: left; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 0.8rem;">
-${error.stack}
-        </pre>
-        <button onclick="loadPianoVideos()" style="margin-top: 15px; padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer;">
-          Try Again
-        </button>
+        <i class="fas fa-music"></i>
+        <h3>Piano Performances</h3>
+        <p>Check back soon for piano performances!</p>
       </div>
     `;
   }
 }
 
+// ======================
+// LOAD BLOGS
+// ======================
 async function loadBlogs() {
   console.log('📝 Loading blogs...');
   const container = document.getElementById('blogsList');
-  if (!container) {
-    console.error('❌ Blogs container not found');
-    return;
-  }
+  if (!container) return;
   
-  // Show loading
   container.innerHTML = `
     <div class="loading-state">
       <i class="fas fa-spinner fa-spin"></i>
@@ -439,18 +367,15 @@ async function loadBlogs() {
   `;
   
   try {
-    // Get Firebase functions
     const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js');
     const { getFirestore, collection, getDocs, query, orderBy } = 
       await import('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js');
     
-    // Initialize app
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     
     console.log('✅ Firebase connected, fetching blogs...');
     
-    // Query blogs collection
     const blogsCollection = collection(db, 'blogs');
     const blogsQuery = query(blogsCollection, orderBy('timestamp', 'desc'));
     const querySnapshot = await getDocs(blogsQuery);
@@ -469,35 +394,21 @@ async function loadBlogs() {
     }
     
     let blogsHTML = '';
-    window.blogsData = []; // Store for "Read More"
+    window.blogsData = [];
     
-    // Loop through each document
     querySnapshot.forEach((doc) => {
       const blog = doc.data();
       const blogId = doc.id;
       
-      console.log('📄 Processing blog:', blog);
-      console.log('Blog fields:', Object.keys(blog));
-      
-      // Format date
       let displayDate = 'Recently';
       try {
         if (blog.timestamp && blog.timestamp.toDate) {
-          displayDate = blog.timestamp.toDate().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-          });
+          displayDate = blog.timestamp.toDate().toLocaleDateString();
         } else if (blog.timestamp && blog.timestamp.seconds) {
           displayDate = new Date(blog.timestamp.seconds * 1000).toLocaleDateString();
-        } else if (blog.date) {
-          displayDate = blog.date;
         }
-      } catch (e) {
-        console.log('Date formatting error:', e);
-      }
+      } catch (e) {}
       
-      // Store for "Read More"
       window.blogsData.push({
         id: blogId,
         data: blog
@@ -507,12 +418,12 @@ async function loadBlogs() {
         <div class="content-card blog-card">
           <div class="blog-content">
             <div class="blog-meta">
-              <span class="blog-category">${blog.category || blog.type || 'General'}</span>
+              <span class="blog-category">${blog.category || 'General'}</span>
               <span class="blog-date">${displayDate}</span>
             </div>
-            <h3 class="blog-title">${blog.title || blog.name || 'Untitled Post'}</h3>
-            <p class="blog-excerpt">${blog.excerpt || blog.description || blog.content?.substring(0, 150) || 'No excerpt available.'}...</p>
-            <button class="read-more-btn" data-blog-id="${blogId}" onclick="viewBlog('${blogId}')">
+            <h3 class="blog-title">${blog.title || 'Untitled Post'}</h3>
+            <p class="blog-excerpt">${blog.excerpt || 'No excerpt available.'}</p>
+            <button class="read-more-btn" onclick="viewBlog('${blogId}')">
               Read More <i class="fas fa-arrow-right"></i>
             </button>
           </div>
@@ -523,33 +434,22 @@ async function loadBlogs() {
     container.innerHTML = blogsHTML;
     console.log('✅ Blogs displayed successfully');
     
-    // Add event listeners (alternative method)
-    setTimeout(() => {
-      const buttons = container.querySelectorAll('.read-more-btn');
-      buttons.forEach(button => {
-        button.addEventListener('click', function() {
-          const blogId = this.getAttribute('data-blog-id');
-          viewBlog(blogId);
-        });
-      });
-    }, 100);
-    
   } catch (error) {
     console.error('❌ Error loading blogs:', error);
     
     container.innerHTML = `
       <div class="no-content">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Error Loading Blogs</h3>
-        <p>${error.message}</p>
-        <button onclick="loadBlogs()" style="margin-top: 15px; padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer;">
-          Try Again
-        </button>
+        <i class="fas fa-blog"></i>
+        <h3>Blog Posts Coming Soon</h3>
+        <p>Working on exciting blog posts!</p>
       </div>
     `;
   }
 }
 
+// ======================
+// VIEW BLOG
+// ======================
 async function viewBlog(blogId) {
   console.log('👁️ Viewing blog:', blogId);
   
@@ -589,110 +489,15 @@ async function viewBlog(blogId) {
   }
 }
 
-function showBlogModal(blogData) {
-  console.log('Showing blog:', blogData.title);
-  
-  const modal = document.getElementById('blogModal');
-  const title = document.getElementById('blogModalTitle');
-  const content = document.getElementById('blogModalContent');
-  
-  if (!modal || !title || !content) return;
-  
-  title.textContent = blogData.title || 'Blog Post';
-  
-  let displayDate = 'Recently';
-  try {
-    if (blogData.timestamp?.toDate) {
-      displayDate = blogData.timestamp.toDate().toLocaleDateString();
-    }
-  } catch (e) {}
-  
-  content.innerHTML = `
-    <div class="blog-modal-meta">
-      <span class="blog-modal-category">${blogData.category || 'General'}</span>
-      <span class="blog-modal-date">
-        <i class="far fa-calendar"></i> ${displayDate}
-      </span>
-    </div>
-    
-    <div class="blog-modal-body">
-      ${blogData.content ? blogData.content.replace(/\n/g, '<br>') : 'No content.'}
-    </div>
-  `;
-  
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-// Make it available globally
-window.showBlogModal = showBlogModal;
-// ======================
-// BLOG MODAL SETUP
-// ======================
-function setupBlogModal() {
-  const blogModal = document.getElementById('blogModal');
-  const blogModalClose = document.getElementById('blogModalClose');
-  
-  if (!blogModal || !blogModalClose) return;
-  
-  blogModalClose.addEventListener('click', () => {
-    soundManager.play();
-    blogModal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-  });
-  
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && blogModal.classList.contains('active')) {
-      blogModal.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
-  });
-  
-  blogModal.addEventListener('click', (e) => {
-    if (e.target === blogModal) {
-      blogModal.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
-  });
-}
-
-// ======================
-// ERROR TOAST
-// ======================
-function showErrorToast(message) {
-  const toast = document.createElement('div');
-  toast.className = 'error-toast';
-  toast.innerHTML = `
-    <i class="fas fa-exclamation-circle"></i>
-    <span>${message}</span>
-  `;
-  
-  document.body.appendChild(toast);
-  
-  setTimeout(() => toast.classList.add('show'), 10);
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }, 5000);
-}
-
 // ======================
 // INITIALIZE EVERYTHING
 // ======================
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Portfolio loading...');
+  console.log('🚀 Portfolio initializing...');
   
-  // Setup loading screen first
+  // Setup features
   setupLoadingScreen();
-  
-  // Setup other features
   setupNavigation();
-  setupMobileMenu();
   setupBlogModal();
   
   // Make functions globally available
@@ -700,10 +505,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.loadBlogs = loadBlogs;
   window.viewBlog = viewBlog;
   window.showBlogModal = showBlogModal;
-  window.soundManager = soundManager;
   
-  console.log('Portfolio ready!');
+  console.log('✅ Portfolio ready!');
 });
-
-
-
