@@ -39,15 +39,27 @@ const soundManager = {
 };
 window.soundManager = soundManager;
 
+function ensureBackgroundMusic() {
+  if (!soundManager.enabled || !window.BackgroundMusic) return;
+  if (window.BackgroundMusic.started) return;
+  window.BackgroundMusic.play();
+}
+
 function setupSoundToggle() {
   const btn = document.getElementById('soundToggle');
   if (!btn || typeof window.Sounds === 'undefined') return;
   if (window.Sounds.init) window.Sounds.init();
+  if (window.BackgroundMusic) window.BackgroundMusic.init();
   btn.classList.toggle('muted', !soundManager.enabled);
   btn.addEventListener('click', () => {
     soundManager.enabled = !soundManager.enabled;
     btn.classList.toggle('muted', !soundManager.enabled);
-    if (soundManager.enabled) window.Sounds.playClick();
+    if (soundManager.enabled) {
+      window.Sounds.playClick();
+      if (window.BackgroundMusic) window.BackgroundMusic.play();
+    } else {
+      if (window.BackgroundMusic) window.BackgroundMusic.pause();
+    }
   });
 }
 
@@ -104,6 +116,7 @@ function setupNavigation() {
     link.addEventListener('click', function(e) {
       e.preventDefault();
       if (window.Sounds && window.Sounds.playClick) window.Sounds.playClick();
+      ensureBackgroundMusic();
       window.location.hash = this.getAttribute('href');
     });
   });
@@ -515,6 +528,7 @@ async function loadBlogs() {
 async function viewBlog(blogId) {
   console.log('👁️ Viewing blog:', blogId);
   if (window.Sounds && window.Sounds.playClick) window.Sounds.playClick();
+  ensureBackgroundMusic();
   try {
     // Try cached data first
     if (window.blogsData) {
@@ -561,6 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLoadingScreen();
   setupNavigation();
   setupBlogModal();
+  document.addEventListener('click', ensureBackgroundMusic, { once: true });
   
   // Make functions globally available
   window.loadPianoVideos = loadPianoVideos;
