@@ -62,7 +62,13 @@ async function testFirebaseConnection() {
   }
 }
 </script>
-  
+
+  <!-- Add this anywhere in index.html -->
+<div style="position: fixed; bottom: 70px; right: 20px; z-index: 9999;">
+  <button onclick="debugFirebaseData()" style="background: #4CAF50; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">
+    Debug Data
+  </button>
+</div>
   <!-- HEADER / NAV - Auto-hide -->
   <header class="site-header" id="mainHeader">
     <div class="header-inner">
@@ -530,6 +536,7 @@ async function testFirebaseConnection() {
  
 </body>
 </html>
+
 
 
 
