@@ -1,7 +1,7 @@
 // main.js - Portfolio Website with Firebase
 
 // ======================
-// FIREBASE CONFIGURATION
+// FIREBASE CONFIGURATION hello i am nowraj pandey
 // ======================
 const firebaseConfig = {
   apiKey: "AIzaSyCP-FF-B3hKADVJ5l5us5LAAQl2Sm-_ebU",
@@ -90,28 +90,49 @@ function setupNavigation() {
 // ======================
 // BLOG MODAL SETUP
 // ======================
+let blogScrollableEl = null;
+let blogProgressHandler = null;
+
+function updateBlogProgress() {
+  const progressEl = document.getElementById('blogModalProgress');
+  if (!progressEl || !blogScrollableEl) return;
+  const { scrollTop, scrollHeight, clientHeight } = blogScrollableEl;
+  const total = scrollHeight - clientHeight;
+  const pct = total <= 0 ? 1 : Math.min(1, scrollTop / total);
+  progressEl.style.transform = `scaleX(${pct})`;
+}
+
+function closeBlogModal() {
+  const modal = document.getElementById('blogModal');
+  if (!modal) return;
+  modal.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  if (blogScrollableEl && blogProgressHandler) {
+    blogScrollableEl.removeEventListener('scroll', blogProgressHandler);
+    blogScrollableEl = null;
+    blogProgressHandler = null;
+  }
+  const progressEl = document.getElementById('blogModalProgress');
+  if (progressEl) progressEl.style.transform = 'scaleX(0)';
+}
+
 function setupBlogModal() {
   const modal = document.getElementById('blogModal');
   const closeBtn = document.getElementById('blogModalClose');
   
   if (!modal || !closeBtn) return;
   
-  closeBtn.addEventListener('click', () => {
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-  });
+  closeBtn.addEventListener('click', closeBlogModal);
   
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('active')) {
-      modal.classList.remove('active');
-      document.body.style.overflow = 'auto';
+      closeBlogModal();
     }
   });
   
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
-      modal.classList.remove('active');
-      document.body.style.overflow = 'auto';
+      closeBlogModal();
     }
   });
 }
@@ -240,12 +261,23 @@ function showBlogModal(blogData) {
     }
   }, 100);
   
+  // Reset reading progress and scroll
+  const progressEl = document.getElementById('blogModalProgress');
+  if (progressEl) progressEl.style.transform = 'scaleX(0)';
+  const scrollable = blogModal.querySelector('.blog-modal');
+  if (scrollable) scrollable.scrollTop = 0;
+
   // Show modal
   blogModal.classList.add('active');
   document.body.style.overflow = 'hidden';
-  
-  // Reset scroll position
-  blogModalContent.scrollTop = 0;
+
+  // Wire up scroll-driven progress bar
+  if (scrollable && progressEl) {
+    blogScrollableEl = scrollable;
+    blogProgressHandler = updateBlogProgress;
+    scrollable.addEventListener('scroll', blogProgressHandler);
+    updateBlogProgress();
+  }
 }
 
 // ======================
