@@ -1,108 +1,92 @@
-/* sounds.js – Sound effects + background piano music */
-
-/* Soft piano loop – seamless background music. Replace with assets/piano-loop.mp3 for a local file. */
-const PIANO_LOOP_URL = 'https://www.orangefreesounds.com/wp-content/uploads/2015/01/Piano-loop-120-bpm.mp3';
-const PIANO_LOOP_FALLBACK = 'assets/piano-loop.mp3';
-
-const Sounds = {
-  _ctx: null,
-  _initialized: false,
-
-  init() {
-    if (this._initialized) return;
-    try {
-      this._ctx = new (window.AudioContext || window.webkitAudioContext)();
-      this._initialized = true;
-    } catch (e) {
-      console.warn('Sounds: AudioContext not supported', e);
-    }
-  },
-
-  _ensureContext() {
-    if (!this._ctx) this.init();
-    if (!this._ctx) return null;
-    if (this._ctx.state === 'suspended') {
-      this._ctx.resume().catch(() => {});
-    }
-    return this._ctx;
-  },
-
-  _playTone(freq, durationMs, volume = 0.12) {
-    const ctx = this._ensureContext();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, now);
-    osc.frequency.exponentialRampToValueAtTime(freq * 0.6, now + durationMs * 0.001);
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(volume, now + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + durationMs * 0.001);
-    osc.start(now);
-    osc.stop(now + durationMs * 0.001);
-  },
-
-  playClick() {
-    if (typeof window.soundManager !== 'undefined' && !window.soundManager.enabled) return;
-    this._playTone(880, 45, 0.1);
-  },
-
-  playSoft() {
-    if (typeof window.soundManager !== 'undefined' && !window.soundManager.enabled) return;
-    this._playTone(660, 35, 0.08);
+// sounds.js - Sound Manager
+class SoundManager {
+  constructor() {
+    this.sounds = {};
+    this.volume = 0.3;
+    this.enabled = true;
+    this.loaded = false;
   }
-};
 
-const BackgroundMusic = {
-  audio: null,
-  started: false,
-  _triedFallback: false,
+  async loadSounds() {
+    // Piano background music - royalty free piano piece
+    this.sounds.background = new Audio('https://assets.mixkit.co/music/preview/mixkit-piano-loop-1124.mp3');
+    this.sounds.background.loop = true;
+    this.sounds.background.volume = this.volume * 0.5;
 
-  init() {
-    if (this.audio) return;
+    // Button click sound
+    this.sounds.click = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3');
+    this.sounds.click.volume = this.volume;
+
+    // Page transition sound
+    this.sounds.transition = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkles-300.mp3');
+    this.sounds.transition.volume = this.volume * 0.7;
+
+    // Success sound for interactions
+    this.sounds.success = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
+    this.sounds.success.volume = this.volume;
+
+    // Menu open/close sound
+    this.sounds.menu = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arrow-whoosh-1491.mp3');
+    this.sounds.menu.volume = this.volume;
+
+    // Typing sound for text animations
+    this.sounds.type = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-keyboard-typing-1386.mp3');
+    this.sounds.type.volume = this.volume * 0.3;
+
+    this.loaded = true;
+    console.log('Sounds loaded successfully');
+  }
+
+  play(soundName) {
+    if (!this.enabled || !this.loaded || !this.sounds[soundName]) return;
+    
     try {
-      this.audio = new Audio(PIANO_LOOP_URL);
-      this.audio.loop = true;
-      this.audio.volume = 0.2;
-      this.audio.preload = 'auto';
-      const self = this;
-      this.audio.addEventListener('error', function onError() {
-        self.audio.removeEventListener('error', onError);
-        if (!self._triedFallback) {
-          self._triedFallback = true;
-          self.audio = new Audio(PIANO_LOOP_FALLBACK);
-          self.audio.loop = true;
-          self.audio.volume = 0.2;
-          self.audio.preload = 'auto';
+      const sound = this.sounds[soundName].cloneNode();
+      sound.volume = soundName === 'background' ? this.volume * 0.5 : this.volume;
+      sound.play().catch(e => console.log('Sound play failed:', e));
+    } catch (error) {
+      console.log('Sound error:', error);
+    }
+  }
+
+  stop(soundName) {
+    if (this.sounds[soundName]) {
+      this.sounds[soundName].pause();
+      this.sounds[soundName].currentTime = 0;
+    }
+  }
+
+  toggleMute() {
+    this.enabled = !this.enabled;
+    localStorage.setItem('soundEnabled', this.enabled);
+    
+    if (!this.enabled) {
+      Object.values(this.sounds).forEach(sound => {
+        if (sound && typeof sound.pause === 'function') {
+          sound.pause();
+          sound.currentTime = 0;
         }
       });
-    } catch (e) {
-      console.warn('BackgroundMusic: init failed', e);
     }
-  },
-
-  play() {
-    this.init();
-    if (!this.audio) return;
-    this.audio.volume = 0.2;
-    this.audio.play().then(() => { this.started = true; }).catch(() => {});
-  },
-
-  pause() {
-    if (!this.audio) return;
-    this.audio.pause();
-    this.audio.currentTime = 0;
-  },
-
-  setVolume(v) {
-    if (this.audio) this.audio.volume = Math.max(0, Math.min(1, v));
+    
+    return this.enabled;
   }
-};
 
-if (typeof window !== 'undefined') {
-  window.Sounds = Sounds;
-  window.BackgroundMusic = BackgroundMusic;
+  setVolume(level) {
+    this.volume = Math.max(0, Math.min(1, level));
+    Object.values(this.sounds).forEach(sound => {
+      if (sound) {
+        sound.volume = this.volume;
+      }
+    });
+    localStorage.setItem('soundVolume', this.volume);
+  }
 }
+
+// Initialize sound manager globally
+window.soundManager = new SoundManager();
+
+// Load sounds when page is ready
+document.addEventListener('DOMContentLoaded', () => {
+  window.soundManager.loadSounds();
+});
