@@ -20,7 +20,7 @@
   
   <!-- Scroll Progress Bar -->
   <div class="scroll-progress"></div>
-
+  
   <!-- HEADER / NAV - Auto-hide -->
   <header class="site-header" id="mainHeader">
     <div class="header-inner">
@@ -403,25 +403,6 @@
       </div>
     </div>
 
-       <!-- Blog Modal -->
-    <div id="blogModal" class="blog-modal-overlay">
-      <div class="blog-modal">
-        <div class="blog-modal-header">
-          <h2 class="blog-modal-title" id="blogModalTitle">Blog Title</h2>
-          <button class="blog-modal-close" id="blogModalClose">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        
-        <div class="blog-modal-content" id="blogModalContent">
-          <!-- Blog content will be loaded here -->
-        </div>
-      </div>
-      <div class="blog-modal-progress-track">
-        <div class="blog-modal-progress" id="blogModalProgress"></div>
-      </div>
-    </div>
-
     <!-- Goals Page -->
     <div id="goals-content" class="page-content">
       <div class="page-header">
@@ -435,7 +416,7 @@
       
       <div class="goals-timeline">
         <div class="timeline-item">
-          <div class="timeline-period">🎯 Short-term</div>
+          <div class="timeline-period">🎯 Short-term (2024-2025)</div>
           <div class="timeline-content">
             <h3>Immediate Objectives</h3>
             <ul class="styled-list">
@@ -449,7 +430,7 @@
         </div>
         
         <div class="timeline-item">
-          <div class="timeline-period">🚀 Medium-term</div>
+          <div class="timeline-period">🚀 Medium-term (2025-2027)</div>
           <div class="timeline-content">
             <h3>Academic & Career Goals</h3>
             <ul class="styled-list">
@@ -463,7 +444,7 @@
         </div>
         
         <div class="timeline-item">
-          <div class="timeline-period">💫 Long-term</div>
+          <div class="timeline-period">💫 Long-term (2027+)</div>
           <div class="timeline-content">
             <h3>Life Vision & Impact</h3>
             <ul class="styled-list">
@@ -487,10 +468,169 @@
   <!-- Scripts -->
   <script src="sounds.js"></script>
   <script src="main.js"></script>
- 
+  <script src="firebase-loader.js"></script>
+  
+  <!-- Navigation Script -->
+  <script>
+  // Simple page navigation - FIXED VERSION
+  document.addEventListener('DOMContentLoaded', function() {
+    // Function to show page
+    function showPage(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page-content').forEach(page => {
+        page.style.display = 'none';
+        page.classList.remove('active');
+      });
+      
+      // Show selected page
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.style.display = 'block';
+        setTimeout(() => {
+          targetPage.classList.add('active');
+        }, 10);
+        
+        // Scroll to top smoothly
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        
+        // Load content for specific pages
+        if (pageId === 'piano-content') {
+          setTimeout(() => {
+            if (window.loadPianoVideos) loadPianoVideos();
+          }, 300);
+        } else if (pageId === 'blogs-content') {
+          setTimeout(() => {
+            if (window.loadBlogs) loadBlogs();
+          }, 300);
+        }
+      }
+    }
+
+    // Handle hash changes
+    function handleHashChange() {
+      const hash = window.location.hash.substring(2); // Remove '#/'
+      const pageMap = {
+        '': 'home-content',
+        'piano': 'piano-content',
+        'blogs': 'blogs-content',
+        'study': 'study-content',
+        'goals': 'goals-content'
+      };
+      
+      const pageId = pageMap[hash] || 'home-content';
+      showPage(pageId);
+      
+      // Update active nav links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        const linkHash = link.getAttribute('href').substring(2); // Remove '#/'
+        if ((hash === '' && linkHash === '') || (hash === linkHash)) {
+          link.classList.add('active');
+        }
+      });
+      
+      // Update cursor visibility
+      const cursor = document.querySelector('.cursor-effect');
+      if (cursor) {
+        if (pageId === 'home-content') {
+          cursor.style.display = 'block';
+        } else {
+          cursor.style.display = 'none';
+        }
+      }
+    }
+
+    // Set up navigation links
+    function setupNavLinks() {
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const href = this.getAttribute('href');
+          window.location.hash = href;
+        });
+      });
+    }
+
+    // Initialize navigation
+    function initNavigation() {
+      // Set up links
+      setupNavLinks();
+      
+      // Handle initial hash
+      if (!window.location.hash || window.location.hash === '#') {
+        window.location.hash = '#/';
+      }
+      
+      // Initial page load
+      handleHashChange();
+      
+      // Listen for hash changes
+      window.addEventListener('hashchange', handleHashChange);
+      
+      // Also listen for popstate (back/forward buttons)
+      window.addEventListener('popstate', handleHashChange);
+    }
+
+    // Start navigation
+    initNavigation();
+    
+    // Back to top button
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+      backToTop.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+      
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+      });
+    }
+    
+    // Hide loading screen
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
+        }
+      }, 1000);
+    });
+    
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.querySelector('.nav');
+    if (menuToggle && nav) {
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        nav.classList.toggle('active');
+        menuToggle.querySelector('i').className = nav.classList.contains('active') 
+          ? 'fas fa-times' 
+          : 'fas fa-bars';
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
+          nav.classList.remove('active');
+          menuToggle.querySelector('i').className = 'fas fa-bars';
+        }
+      });
+    }
+  });
+  </script>
 </body>
 </html>
-
-
-
-
