@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Nowraj — Portfolio</title>
-  
+
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <!-- Loading Screen -->
   <div class="loading" id="loadingScreen">
     <div class="spinner"></div>
     <p>Loading...</p>
   </div>
-  
+
   <!-- Scroll Progress Bar -->
   <div class="scroll-progress"></div>
-  
+
   <!-- HEADER / NAV - Auto-hide -->
   <header class="site-header" id="mainHeader">
     <div class="header-inner">
@@ -28,7 +30,7 @@
       <a class="brand" href="#/">
         <img src="assets/nowraj-logo.png" alt="Nowraj" class="brand-img" />
       </a>
-      
+
       <!-- Desktop Navigation -->
       <nav class="nav" aria-label="Main navigation">
         <ul class="nav-list">
@@ -39,7 +41,7 @@
           <li><a href="#/goals" class="nav-link">Goals</a></li>
         </ul>
       </nav>
-      
+
       <!-- Header Actions -->
       <div class="header-actions">
         <!-- Sound Toggle - Styled -->
@@ -49,7 +51,7 @@
             <i class="fas fa-volume-mute sound-off"></i>
           </div>
         </button>
-        
+
         <!-- Mobile Menu Toggle -->
         <button class="mobile-toggle" id="menuToggle" aria-label="Menu">
           <i class="fas fa-bars"></i>
@@ -81,8 +83,8 @@
           <h1 class="name">I am Nowraj Pandey</h1>
           <h2 class="tagline">Aspiring Software Developer & Music Enthusiast</h2>
           <p class="description">
-            I'm a passionate student diving deep into the world of technology while exploring my love for music. 
-            Currently learning piano and guitar, I find harmony in both code and chords. My journey involves 
+            I'm a passionate student diving deep into the world of technology while exploring my love for music.
+            Currently learning piano and guitar, I find harmony in both code and chords. My journey involves
             mastering programming languages, clearing JEE exams, and creating meaningful digital experiences.
           </p>
           <div class="cta-buttons">
@@ -153,7 +155,8 @@
           <div class="project-card">
             <i class="fas fa-code project-icon"></i>
             <h3>Portfolio Website</h3>
-            <p>This responsive portfolio website built with modern CSS animations, glass morphism effects, and smooth transitions. Features auto-hide navigation, cursor effects, and dynamic content loading.</p>
+            <p>This responsive portfolio website built with modern CSS animations, glass morphism effects, and smooth
+              transitions. Features auto-hide navigation, cursor effects, and dynamic content loading.</p>
             <div class="project-tech">
               <span class="tech-tag">HTML</span>
               <span class="tech-tag">CSS</span>
@@ -162,24 +165,31 @@
             </div>
             <span class="project-status" data-status="completed">Completed</span>
           </div>
-          
-          <div class="project-card">
-            <i class="fas fa-music project-icon"></i>
-            <h3>Piano Practice Tracker</h3>
-            <p>Web app to track piano practice sessions, progress, and repertoire. Includes metronome, practice timer, and performance recording features integrated with YouTube API.</p>
-            <div class="project-tech">
-              <span class="tech-tag">React</span>
-              <span class="tech-tag">Node.js</span>
-              <span class="tech-tag">YouTube API</span>
-              <span class="tech-tag">MongoDB</span>
+
+          <div class="project-card" onclick="window.open('https://pawanpandeymusic.github.io', '_blank')"
+            style="cursor: pointer; position: relative;">
+            <div
+              style="position: absolute; top: 20px; right: 20px; background: var(--glass-bg); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent); color: var(--accent); box-shadow: 0 0 15px rgba(0, 102, 255, 0.3); transition: transform 0.3s ease;">
+              <i class="fas fa-external-link-alt"></i>
             </div>
-            <span class="project-status" data-status="in-progress">In Progress</span>
+            <i class="fas fa-briefcase project-icon"></i>
+            <h3>My Father's Portfolio</h3>
+            <p>A professional digital portfolio designed to showcase career achievements, skills, and professional
+              experience with a clean, modern, and responsive interface.</p>
+            <div class="project-tech">
+              <span class="tech-tag">HTML5</span>
+              <span class="tech-tag">CSS3</span>
+              <span class="tech-tag">JavaScript</span>
+              <span class="tech-tag">Responsive</span>
+            </div>
+            <span class="project-status" data-status="completed">Completed</span>
           </div>
-          
+
           <div class="project-card">
             <i class="fas fa-robot project-icon"></i>
             <h3>AI Study Assistant</h3>
-            <p>AI-powered study assistant that helps with JEE preparation, generates practice questions, tracks progress, and provides personalized learning recommendations.</p>
+            <p>AI-powered study assistant that helps with JEE preparation, generates practice questions, tracks
+              progress, and provides personalized learning recommendations.</p>
             <div class="project-tech">
               <span class="tech-tag">Python</span>
               <span class="tech-tag">OpenAI API</span>
@@ -225,11 +235,12 @@
         <h1 class="page-title">🎹 Piano Journey</h1>
         <p class="page-subtitle">My musical adventure with classical pieces and modern compositions</p>
       </div>
-      
+
       <div class="page-description">
-        <p>My musical journey with piano began as a way to express creativity beyond code. I'm currently learning classical pieces and exploring how music theory intersects with programming concepts.</p>
+        <p>My musical journey with piano began as a way to express creativity beyond code. I'm currently learning
+          classical pieces and exploring how music theory intersects with programming concepts.</p>
       </div>
-      
+
       <!-- Piano Videos Section -->
       <section class="piano-videos-section">
         <h2 class="section-title">My Piano Performances</h2>
@@ -241,7 +252,7 @@
           </div>
         </div>
       </section>
-      
+
       <div class="content-grid">
         <div class="content-card piano-card">
           <div class="card-header">
@@ -285,11 +296,12 @@
         <h1 class="page-title">📝 Blogs & Thoughts</h1>
         <p class="page-subtitle">Sharing my journey through technology, music, and personal growth</p>
       </div>
-      
+
       <div class="page-description">
-        <p>Here you'll find insights about programming, learning experiences, and creative pursuits. I write about technology, education, and the intersection of code and music.</p>
+        <p>Here you'll find insights about programming, learning experiences, and creative pursuits. I write about
+          technology, education, and the intersection of code and music.</p>
       </div>
-      
+
       <div id="blogsList" class="content-grid">
         <div class="loading-state">
           <i class="fas fa-spinner fa-spin"></i>
@@ -305,11 +317,12 @@
         <h1 class="page-title">📚 Study & Learning</h1>
         <p class="page-subtitle">My educational journey and academic achievements</p>
       </div>
-      
+
       <div class="page-description">
-        <p>My educational journey has been marked by consistent growth and academic excellence. I believe in combining structured learning with practical application to achieve meaningful results.</p>
+        <p>My educational journey has been marked by consistent growth and academic excellence. I believe in combining
+          structured learning with practical application to achieve meaningful results.</p>
       </div>
-      
+
       <div class="content-grid">
         <div class="content-card study-card">
           <div class="card-header">
@@ -335,7 +348,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="content-card achievement-card">
           <div class="card-header">
             <i class="fas fa-trophy card-icon"></i>
@@ -350,7 +363,8 @@
             </div>
           </div>
           <div class="achievement-description">
-            Outstanding performance in ICSE examinations demonstrating strong academic capabilities and consistent dedication to learning.
+            Outstanding performance in ICSE examinations demonstrating strong academic capabilities and consistent
+            dedication to learning.
           </div>
           <div class="achievement-highlights">
             <div class="highlight-item">
@@ -363,7 +377,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="content-card focus-card">
           <div class="card-header">
             <i class="fas fa-book-open card-icon"></i>
@@ -403,20 +417,40 @@
       </div>
     </div>
 
+    <!-- Blog Modal -->
+    <div id="blogModal" class="blog-modal-overlay">
+      <div class="blog-modal">
+        <div class="blog-modal-header">
+          <h2 class="blog-modal-title" id="blogModalTitle">Blog Title</h2>
+          <button class="blog-modal-close" id="blogModalClose">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="blog-modal-content" id="blogModalContent">
+          <!-- Blog content will be loaded here -->
+        </div>
+      </div>
+      <div class="blog-modal-progress-track">
+        <div class="blog-modal-progress" id="blogModalProgress"></div>
+      </div>
+    </div>
+
     <!-- Goals Page -->
     <div id="goals-content" class="page-content">
       <div class="page-header">
         <h1 class="page-title">🌟 Goals & Aspirations</h1>
         <p class="page-subtitle">My roadmap for technology, education, and personal growth</p>
       </div>
-      
+
       <div class="page-description">
-        <p>Setting clear goals has been crucial in my journey. Here are my current objectives and long-term aspirations in technology, education, and personal growth.</p>
+        <p>Setting clear goals has been crucial in my journey. Here are my current objectives and long-term aspirations
+          in technology, education, and personal growth.</p>
       </div>
-      
+
       <div class="goals-timeline">
         <div class="timeline-item">
-          <div class="timeline-period">🎯 Short-term (2024-2025)</div>
+          <div class="timeline-period">🎯 Short-term</div>
           <div class="timeline-content">
             <h3>Immediate Objectives</h3>
             <ul class="styled-list">
@@ -428,9 +462,9 @@
             </ul>
           </div>
         </div>
-        
+
         <div class="timeline-item">
-          <div class="timeline-period">🚀 Medium-term (2025-2027)</div>
+          <div class="timeline-period">🚀 Medium-term</div>
           <div class="timeline-content">
             <h3>Academic & Career Goals</h3>
             <ul class="styled-list">
@@ -442,9 +476,9 @@
             </ul>
           </div>
         </div>
-        
+
         <div class="timeline-item">
-          <div class="timeline-period">💫 Long-term (2027+)</div>
+          <div class="timeline-period">💫 Long-term</div>
           <div class="timeline-content">
             <h3>Life Vision & Impact</h3>
             <ul class="styled-list">
@@ -468,169 +502,7 @@
   <!-- Scripts -->
   <script src="sounds.js"></script>
   <script src="main.js"></script>
-  <script src="firebase-loader.js"></script>
-  
-  <!-- Navigation Script -->
-  <script>
-  // Simple page navigation - FIXED VERSION
-  document.addEventListener('DOMContentLoaded', function() {
-    // Function to show page
-    function showPage(pageId) {
-      // Hide all pages
-      document.querySelectorAll('.page-content').forEach(page => {
-        page.style.display = 'none';
-        page.classList.remove('active');
-      });
-      
-      // Show selected page
-      const targetPage = document.getElementById(pageId);
-      if (targetPage) {
-        targetPage.style.display = 'block';
-        setTimeout(() => {
-          targetPage.classList.add('active');
-        }, 10);
-        
-        // Scroll to top smoothly
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-        
-        // Load content for specific pages
-        if (pageId === 'piano-content') {
-          setTimeout(() => {
-            if (window.loadPianoVideos) loadPianoVideos();
-          }, 300);
-        } else if (pageId === 'blogs-content') {
-          setTimeout(() => {
-            if (window.loadBlogs) loadBlogs();
-          }, 300);
-        }
-      }
-    }
 
-    // Handle hash changes
-    function handleHashChange() {
-      const hash = window.location.hash.substring(2); // Remove '#/'
-      const pageMap = {
-        '': 'home-content',
-        'piano': 'piano-content',
-        'blogs': 'blogs-content',
-        'study': 'study-content',
-        'goals': 'goals-content'
-      };
-      
-      const pageId = pageMap[hash] || 'home-content';
-      showPage(pageId);
-      
-      // Update active nav links
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        const linkHash = link.getAttribute('href').substring(2); // Remove '#/'
-        if ((hash === '' && linkHash === '') || (hash === linkHash)) {
-          link.classList.add('active');
-        }
-      });
-      
-      // Update cursor visibility
-      const cursor = document.querySelector('.cursor-effect');
-      if (cursor) {
-        if (pageId === 'home-content') {
-          cursor.style.display = 'block';
-        } else {
-          cursor.style.display = 'none';
-        }
-      }
-    }
-
-    // Set up navigation links
-    function setupNavLinks() {
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const href = this.getAttribute('href');
-          window.location.hash = href;
-        });
-      });
-    }
-
-    // Initialize navigation
-    function initNavigation() {
-      // Set up links
-      setupNavLinks();
-      
-      // Handle initial hash
-      if (!window.location.hash || window.location.hash === '#') {
-        window.location.hash = '#/';
-      }
-      
-      // Initial page load
-      handleHashChange();
-      
-      // Listen for hash changes
-      window.addEventListener('hashchange', handleHashChange);
-      
-      // Also listen for popstate (back/forward buttons)
-      window.addEventListener('popstate', handleHashChange);
-    }
-
-    // Start navigation
-    initNavigation();
-    
-    // Back to top button
-    const backToTop = document.getElementById('backToTop');
-    if (backToTop) {
-      backToTop.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      });
-      
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-          backToTop.classList.add('visible');
-        } else {
-          backToTop.classList.remove('visible');
-        }
-      });
-    }
-    
-    // Hide loading screen
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loadingScreen');
-        if (loadingScreen) {
-          loadingScreen.classList.add('hidden');
-          setTimeout(() => {
-            loadingScreen.style.display = 'none';
-          }, 500);
-        }
-      }, 1000);
-    });
-    
-    // Mobile menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const nav = document.querySelector('.nav');
-    if (menuToggle && nav) {
-      menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        nav.classList.toggle('active');
-        menuToggle.querySelector('i').className = nav.classList.contains('active') 
-          ? 'fas fa-times' 
-          : 'fas fa-bars';
-      });
-      
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
-          nav.classList.remove('active');
-          menuToggle.querySelector('i').className = 'fas fa-bars';
-        }
-      });
-    }
-  });
-  </script>
 </body>
+
 </html>
