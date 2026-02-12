@@ -1,0 +1,185 @@
+# Brand & Styling Guidelines
+
+These guidelines define the visual and typographic system for the website. They are meant to be **simple, consistent, and scalable**, especially when working with **Tailwind CSS**.
+
+---
+
+## 1. Brand Personality
+
+**Tone:** Professional
+**Energy:** Medium (calm confidence, not flashy)
+**Audience:** Design professionals, potential clients, and familiar collaborators
+
+**Brand Feel:**
+
+* Clean, composed, and modern
+* Serious but not cold
+* Designed to communicate trust, clarity, and competence
+
+---
+
+## 2. Typography System
+
+### Font Stack
+
+**Primary Font (UI + Content):**
+
+* **Jost** – used for headings, body text, navigation, and UI labels
+
+**Secondary / Legacy Fonts (Optional / Contextual):**
+
+* Times New Roman – avoid unless needed for editorial or document-style content
+* Lato – avoid unless required for legacy sections
+
+> Recommendation: Standardize entirely on **Jost** for visual consistency.
+
+---
+
+### Type Hierarchy
+
+| Element | Size                  | Usage                      |
+| ------- | --------------------- | -------------------------- |
+| H1      | 35px                  | Page titles, main sections |
+| H2      | 19px                  | Subsections, card titles   |
+| Body    | 16–18px (recommended) | Paragraphs, descriptions   |
+
+> Note: A 36px body size is visually heavy for web. Use **16–18px** for readability and reserve larger sizes for headings.
+
+---
+
+### Font Weights
+
+* Regular (400): Body text
+* Medium (500): UI labels, navigation
+* Semibold (600): Headings
+
+Avoid excessive bolding to maintain a professional tone.
+
+---
+
+## 3. Color System
+
+### Core Palette
+
+| Role       | Color   | Usage                             |
+| ---------- | ------- | --------------------------------- |
+| Text       | #e8e6e3 | Primary text on dark backgrounds  |
+| Background | #282c2e | Main page background              |
+| Primary    | #eaedf0 | Headlines, key UI elements        |
+| Secondary  | #181a1b | Cards, sections, nav bars         |
+| Accent     | #6d767e | Borders, icons, subtle highlights |
+
+---
+
+### Color Usage Rules
+
+* Use **Text** color for all readable content
+* Use **Primary** sparingly for emphasis and hierarchy
+* Accent should never overpower primary content
+* Avoid introducing new colors unless absolutely necessary
+
+Contrast is optimized for dark-mode readability.
+
+---
+
+## 4. Spacing & Layout
+
+### Base Spacing Unit
+
+* **Base Unit:** 10px
+
+All spacing should be multiples of this unit:
+
+* 10px (xs)
+* 20px (sm)
+* 30px (md)
+* 40px (lg)
+* 60px (xl)
+
+This creates visual rhythm and consistency.
+
+---
+
+### Border Radius
+
+* **Standard Radius:** 12px
+
+Apply to:
+
+* Cards
+* Buttons
+* Inputs
+* Modals
+
+Avoid mixing radius sizes to keep the UI clean.
+
+---
+
+## 5. UI Principles
+
+### Buttons
+
+* Subtle, solid backgrounds
+* Clear hover state (slight brightness or contrast change)
+* Rounded with 12px radius
+
+### Cards & Containers
+
+* Use Secondary color for surfaces
+* Maintain generous padding (20–30px)
+* Minimal shadows or none at all
+
+### Interactions
+
+* Animations should be subtle and purposeful
+* Prefer fades, small translations, and opacity changes
+* Avoid playful or exaggerated motion
+
+---
+
+## 6. Tailwind CSS Configuration (Reference)
+
+```js
+colors: {
+  text: '#e8e6e3',
+  background: '#282c2e',
+  primary: '#eaedf0',
+  secondary: '#181a1b',
+  accent: '#6d767e',
+}
+```
+
+### Tailwind Usage Guidelines
+
+* Use semantic utility combinations
+* Avoid inline styles
+* Prefer consistent spacing utilities (e.g. `p-4`, `gap-4`)
+* Keep class lists readable and intentional
+
+---
+
+## 7. Overall Design Rules (Do / Don’t)
+
+### Do
+
+* Keep layouts clean and breathable
+* Use hierarchy instead of decoration
+* Let typography do most of the work
+
+### Don’t
+
+* Overuse accent colors
+* Mix font families unnecessarily
+* Use loud gradients or flashy effects
+
+---
+
+## Final Brand Summary
+
+This brand system communicates:
+
+* Professionalism
+* Calm confidence
+* Design maturity
+
+It is intentionally restrained so the **content and work speak louder than the styling**.

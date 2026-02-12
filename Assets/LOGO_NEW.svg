@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Allura&amp;display=swap');
+    text {
+      font-family: 'Allura', cursive;
+      font-weight: 400;
+      fill: #FFFFFF;
+    }
+  </style>
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="90">Nowraj</text>
+</svg>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=2.0"
+    />
+    <title>Interactive Piano</title>
+    <link rel="stylesheet" href="piano.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <!-- Left Section: YouTube Showcase -->
+      <div class="video-section">
+        <h2>Showcase</h2>
+        
+        <div class="slider-container">
+          <div class="card-slider">
+            <div class="video-card active" data-index="0">
+              <iframe src="https://www.youtube.com/embed/hNp3bHe-p5I" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card next" data-index="1">
+              <iframe src="https://www.youtube.com/embed/4y33h81phM0" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card hidden" data-index="2">
+              <iframe src="https://www.youtube.com/embed/4Tr0otuiQuU" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="video-card prev" data-index="3">
+              <iframe src="https://www.youtube.com/embed/RBy_S-E6hX0" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-controls">
+          <div class="slider-btn prev-btn"><i class="fas fa-chevron-left"></i></div>
+          <div class="slider-btn next-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+
+      <!-- Right Section: Interactive Piano -->
+      <div class="piano-section">
+        <div class="piano-container">
+          <div class="header">
+            <h1><i class="fas fa-music"></i> Interactive Piano</h1>
+            <p class="subtitle">
+              Click keys or use keyboard: A S D F G H J K (W E T Y U for black keys)
+            </p>
+          </div>
+
+          <div class="controls">
+            <div class="control-group">
+              <label for="volume"> <i class="fas fa-volume-up"></i> Volume </label>
+              <input type="range" id="volume" min="0" max="100" value="70" />
+              <span id="volume-value">70%</span>
+            </div>
+
+            <div class="control-group">
+              <label for="waveform">
+                <i class="fas fa-wave-square"></i> Sound Type
+              </label>
+              <select id="waveform">
+                <option value="sine">Sine (Soft)</option>
+                <option value="triangle">Triangle (Bright)</option>
+                <option value="sawtooth">Sawtooth (Rich)</option>
+                <option value="square">Square (Hollow)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label for="octave"> <i class="fas fa-sliders-h"></i> Octave </label>
+              <select id="octave">
+                <option value="3">Octave 3 (Low)</option>
+                <option value="4" selected>Octave 4 (Middle)</option>
+                <option value="5">Octave 5 (High)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- PIANO WITH FIXED BLACK KEY POSITIONS -->
+          <div class="piano-wrapper">
+            <div class="piano">
+              <!-- White Keys -->
+              <div class="white-keys">
+                <div class="key white" data-note="C" data-key="a">
+                  <div class="key-label">
+                    A<br /><span class="note-name">C</span>
+                  </div>
+                </div>
+                <div class="key white" data-note="D" data-key="s">
+                  <div class="key-label">
+                    S<br /><span class="note-name">D</span>
+                  </div>
+                </div>
+                <div class="key white" data-note="E" data-key="d">
+                  <div class="key-label">
+                    D<br /><span class="note-name">E</span>
+                  </div>
+                </div>
+                <div class="key white" data-note="F" data-key="f">
+                  <div class="key-label">
+                    F<br /><span class="note-name">F</span>
+                  </div>
+                </div>
+                <div class="key white" data-note="G" data-key="g">
+                  <div class="key-label">
+                    G<br /><span class="note-name">G</span>
+                  </div>
+                </div>
+                <div class="key white" data-note="A" data-key="h">
+                  <div class="key-label">
+                    H<br /><span class="note-name">A</span>
+                  </div>
+                </div>
+                <div class="key white" data-note="B" data-key="j">
+                  <div class="key-label">
+                    J<br /><span class="note-name">B</span>
+                  </div>
+                </div>
+                <div class="key white" data-note="C" data-key="k" data-octave="5">
+                  <div class="key-label">
+                    K<br /><span class="note-name">C</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Black Keys Container -->
+              <div class="black-keys-container">
+                <div class="key black" data-note="C#" data-key="w">
+                  <div class="key-label">
+                    W<br /><span class="note-name">C#</span>
+                  </div>
+                </div>
+                <div class="key black" data-note="D#" data-key="e">
+                  <div class="key-label">
+                    E<br /><span class="note-name">D#</span>
+                  </div>
+                </div>
+                <div class="key black" data-note="F#" data-key="t">
+                  <div class="key-label">
+                    T<br /><span class="note-name">F#</span>
+                  </div>
+                </div>
+                <div class="key black" data-note="G#" data-key="y">
+                  <div class="key-label">
+                    Y<br /><span class="note-name">G#</span>
+                  </div>
+                </div>
+                <div class="key black" data-note="A#" data-key="u">
+                  <div class="key-label">
+                    U<br /><span class="note-name">A#</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-panel">
+            <div class="current-note">
+              <i class="fas fa-play-circle"></i>
+              <span>Current Note: <strong id="current-note">-</strong></span>
+            </div>
+            <div class="instructions">
+              <i class="fas fa-info-circle"></i>
+              <span
+                >Press keys or click piano.</span
+              >
+            </div>
+          </div>
+
+          <div class="demo-songs">
+            <h3><i class="fas fa-star"></i> Try These Songs</h3>
+            <div class="song-buttons">
+              <button class="song-btn" data-song="twinkle">
+                <i class="fas fa-star"></i> Twinkle
+              </button>
+              <button class="song-btn" data-song="happy">
+                <i class="fas fa-birthday-cake"></i> Birthday
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="piano.js"></script>
+  </body>
+</html>

@@ -1,636 +1,937 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<!doctype html>
+<html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nowraj — Portfolio</title>
-  
-  <!-- Font Awesome Icons -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nowraj Pandey - Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css">
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="projects-styles.css" />
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.51/build/spline-viewer.js"></script>
 </head>
+
 <body>
-  <!-- Loading Screen -->
-  <div class="loading" id="loadingScreen">
-    <div class="spinner"></div>
-    <p>Loading...</p>
-  </div>
-  
-  <!-- Scroll Progress Bar -->
-  <div class="scroll-progress"></div>
-  
-  <!-- HEADER / NAV - Auto-hide -->
-  <header class="site-header" id="mainHeader">
-    <div class="header-inner">
-      <!-- Brand Logo - Enlarged -->
-      <a class="brand" href="#/">
-        <img src="assets/nowraj-logo.png" alt="Nowraj" class="brand-img" />
-      </a>
-      
-      <!-- Desktop Navigation -->
-      <nav class="nav" aria-label="Main navigation">
-        <ul class="nav-list">
-          <li><a href="#/" class="nav-link active">Home</a></li>
-          <li><a href="#/piano" class="nav-link">Piano</a></li>
-          <li><a href="#/blogs" class="nav-link">Blogs</a></li>
-          <li><a href="#/study" class="nav-link">Study</a></li>
-          <li><a href="#/goals" class="nav-link">Goals</a></li>
-        </ul>
-      </nav>
-      
-      <!-- Header Actions -->
-      <div class="header-actions">
-        <!-- Sound Toggle - Styled -->
-        <button id="soundToggle" class="sound-toggle" aria-label="Toggle sound" title="Toggle sound effects">
-          <div class="sound-toggle-inner">
-            <i class="fas fa-volume-up sound-on"></i>
-            <i class="fas fa-volume-mute sound-off"></i>
-          </div>
-        </button>
-        
-        <!-- Mobile Menu Toggle -->
-        <button class="mobile-toggle" id="menuToggle" aria-label="Menu">
-          <i class="fas fa-bars"></i>
-        </button>
+  <div class="layout-wrapper">
+    <a href="#" class="logo-link">
+      <img src="Assets/signature.png" alt="D.Nova Signature" class="signature-logo" />
+    </a>
+
+    <button class="hamburger-menu" aria-label="Toggle Menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="nav-container">
+      <div class="nav-wrap">
+        <div class="bubble active-bubble"></div>
+        <div class="bubble hover-bubble"></div>
+        <nav class="nav">
+          <a class="active" href="#home">Home</a>
+          <a href="#projects">Projects</a>
+          <a href="#piano">Piano</a>
+          <a href="#blogs">Blogs</a>
+          <a href="#study">Study</a>
+          <a href="#about">About</a>
+        </nav>
       </div>
     </div>
-  </header>
 
-  <!-- Animated Background Elements -->
-  <div class="background-elements">
-    <div class="floating-circle circle-1"></div>
-    <div class="floating-circle circle-2"></div>
-    <div class="floating-circle circle-3"></div>
-    <div class="grid-pattern"></div>
-  </div>
+    <button id="sound-toggle" class="sound-toggle" aria-label="Toggle Sound">
+      <svg class="icon-off" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2">
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+        <path d="M9 9v6a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+        <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+        <line x1="12" y1="19" x2="12" y2="23"></line>
+        <line x1="8" y1="23" x2="16" y2="23"></line>
+      </svg>
+      <svg class="icon-on" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        style="display: none">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+        <line x1="12" y1="19" x2="12" y2="23"></line>
+        <line x1="8" y1="23" x2="16" y2="23"></line>
+      </svg>
+    </button>
 
-  <!-- Main Content -->
-  <main id="app" class="app-root">
-    <!-- Home Page -->
-    <div id="home-content" class="page-content active">
-      <!-- Hero Section -->
-      <section class="hero-section">
-        <div class="hero-image">
-          <div class="photo-frame"></div>
-          <img src="assets/myphoto.png" alt="Nowraj Pandey" class="profile-photo" />
+    <audio id="bg-music" loop>
+      <source src="Assets/Background_Music_Loop.wav" type="audio/wav" />
+    </audio>
+
+    <main id="home" class="hero-section">
+      <div class="text-content">
+        <span class="hero-eyebrow">Hi there,</span>
+        <h1 class="hero-title">
+          I am Nowraj Pandey, <br />
+          a student and aspiring developer
+        </h1>
+        <p class="hero-description">
+          currently studying in Class 11 in West Point School
+        </p>
+
+
+        <div class="scroll-indicator"></div>
+      </div>
+      <div class="image-content">
+        <div class="image-wrapper">
+          <img src="Assets/Hero_Image_Clean.png" alt="Nowraj Pandey" class="hero-image" />
         </div>
-        <div class="hero-content">
-          <p class="greeting">Hello there! 👋</p>
-          <h1 class="name">I am Nowraj Pandey</h1>
-          <h2 class="tagline">Aspiring Software Developer & Music Enthusiast</h2>
-          <p class="description">
-            I'm a passionate student diving deep into the world of technology while exploring my love for music. 
-            Currently learning piano and guitar, I find harmony in both code and chords. My journey involves 
-            mastering programming languages, clearing JEE exams, and creating meaningful digital experiences.
+      </div>
+    </main>
+
+    <section id="about" class="about-section">
+      <div class="about-container">
+        <div class="about-image-wrapper">
+          <img src="Assets/About_Page_Image.jpeg" alt="Nowraj Pandey Portrait" class="about-image" />
+        </div>
+        <div class="about-content">
+          <h2 class="about-heading">Nowraj Pandey is</h2>
+
+          <div class="typewriter-container">
+            <span class="typewriter-dynamic"></span>
+          </div>
+
+          <div class="about-bio">
+            <p>
+              I am an aspiring developer and 11th-grade student at West Point
+              School (ISC), driven by a passion for building the future of the
+              web. For over two years, I've been immersed in 'vibe
+              coding'—leveraging AI and intuitive tools to bring ideas to life
+              rapidly.
+            </p>
+
+            <p>
+              My goal is to bridge the gap between imagination and functional
+              software, eventually engineering AI-driven solutions at industry
+              leaders like Google or Microsoft. I'm dedicated to refining my
+              craft, scaling my skills, and building a career that makes a
+              meaningful impact (and my parents proud).
+            </p>
+          </div>
+
+          <div class="about-actions">
+            <a href="#" class="btn-primary">RESUME</a>
+            <a href="#" class="btn-outline">LINKEDIN</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="projects-section">
+      <div class="projects-container">
+        <div class="projects-content">
+          <h2 class="projects-heading underline-premium">Featured Projects</h2>
+          <p class="projects-intro">
+            Explore my latest work and experiments in web development, AI
+            integration, and interactive design.
           </p>
-          <div class="cta-buttons">
-            <a href="#/piano" class="btn btn-primary">
-              <i class="fas fa-music"></i> Piano Journey
+
+          <div class="project-cards">
+            <a href="https://pawanpandeymusic.github.io" target="_blank" class="project-card-link">
+              <div class="project-card">
+                <h3>My Father's Portfolio</h3>
+                <p>
+                  A beautiful portfolio website for my father showcasing his
+                  musical journey and achievements.
+                </p>
+                <span class="project-link">pawanpandeymusic.github.io →</span>
+              </div>
             </a>
-            <a href="#/study" class="btn btn-secondary">
-              <i class="fas fa-graduation-cap"></i> Study Progress
+
+            <a href="#" class="project-card-link">
+              <div class="project-card">
+                <h3>My Portfolio</h3>
+                <p>
+                  This current website - built with modern web technologies,
+                  featuring interactive 3D elements.
+                </p>
+                <span class="project-link">View Details →</span>
+              </div>
+            </a>
+
+            <a href="#" class="project-card-link">
+              <div class="project-card">
+                <h3>AI-Powered Web Tools</h3>
+                <p>
+                  Building intuitive interfaces leveraging cutting-edge AI
+                  technologies.
+                </p>
+                <span class="project-link">Coming Soon →</span>
+              </div>
             </a>
           </div>
         </div>
-      </section>
 
-      <!-- Skills Section -->
-      <section class="skills-section">
-        <h2 class="section-title">Programming Languages I'm Learning</h2>
-        <div class="skills-grid">
-          <div class="skill-card">
-            <i class="fab fa-html5 skill-icon"></i>
-            <span class="skill-name">HTML5</span>
-            <div class="skill-level">
-              <div class="skill-progress" style="width: 90%"></div>
+        <div class="robot-container" id="robot-canvas-container">
+          <spline-viewer url="https://prod.spline.design/d-MWPTrT8QIVwmFi/scene.splinecode"></spline-viewer>
+        </div>
+      </div>
+    </section>
+
+    <section id="piano" class="piano-section-new">
+      <div class="split-layout-container">
+        <!-- Left: Video Showcase (Card Stack) -->
+        <div class="video-showcase">
+          <h2 class="section-title">Showcase</h2>
+          <div class="stack-wrapper">
+            <div class="card-stack" id="video-stack">
+              <!-- Dynamic piano videos will be loaded here -->
+              <p style="text-align: center; color: var(--accent-color);">Loading videos...</p>
             </div>
-          </div>
-          <div class="skill-card">
-            <i class="fab fa-css3-alt skill-icon"></i>
-            <span class="skill-name">CSS3</span>
-            <div class="skill-level">
-              <div class="skill-progress" style="width: 85%"></div>
-            </div>
-          </div>
-          <div class="skill-card">
-            <i class="fab fa-js skill-icon"></i>
-            <span class="skill-name">JavaScript</span>
-            <div class="skill-level">
-              <div class="skill-progress" style="width: 80%"></div>
-            </div>
-          </div>
-          <div class="skill-card">
-            <i class="fab fa-python skill-icon"></i>
-            <span class="skill-name">Python</span>
-            <div class="skill-level">
-              <div class="skill-progress" style="width: 75%"></div>
-            </div>
-          </div>
-          <div class="skill-card">
-            <i class="fab fa-cuttlefish skill-icon"></i>
-            <span class="skill-name">C++</span>
-            <div class="skill-level">
-              <div class="skill-progress" style="width: 70%"></div>
-            </div>
-          </div>
-          <div class="skill-card">
-            <i class="fab fa-java skill-icon"></i>
-            <span class="skill-name">Java</span>
-            <div class="skill-level">
-              <div class="skill-progress" style="width: 65%"></div>
+
+            <div class="stack-controls">
+              <button class="stack-btn" id="stack-shuffle"><i class="fas fa-random"></i></button>
+              <button class="stack-btn" id="stack-reset"><i class="fas fa-redo"></i></button>
+              <button class="stack-btn" id="stack-prev"><i class="fas fa-chevron-up"></i></button>
+              <button class="stack-btn" id="stack-next"><i class="fas fa-chevron-down"></i></button>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- Projects Section -->
-      <section class="projects-section">
-        <h2 class="section-title">My Projects</h2>
-        <p class="coming-soon-text">🚀 Exciting projects coming soon! Stay tuned for updates.</p>
-        <div class="content-grid">
-          <div class="project-card">
-            <i class="fas fa-code project-icon"></i>
-            <h3>Portfolio Website</h3>
-            <p>This responsive portfolio website built with modern CSS animations, glass morphism effects, and smooth transitions. Features auto-hide navigation, cursor effects, and dynamic content loading.</p>
-            <div class="project-tech">
-              <span class="tech-tag">HTML</span>
-              <span class="tech-tag">CSS</span>
-              <span class="tech-tag">JavaScript</span>
-              <span class="tech-tag">Firebase</span>
+        <!-- Right: Interactive Piano -->
+        <div class="piano-interactive">
+          <div class="piano-card">
+            <div class="piano-header">
+              <!-- Header text removed as per request -->
             </div>
-            <span class="project-status" data-status="completed">Completed</span>
-          </div>
-          
-          <div class="project-card">
-            <i class="fas fa-music project-icon"></i>
-            <h3>Piano Practice Tracker</h3>
-            <p>Web app to track piano practice sessions, progress, and repertoire. Includes metronome, practice timer, and performance recording features integrated with YouTube API.</p>
-            <div class="project-tech">
-              <span class="tech-tag">React</span>
-              <span class="tech-tag">Node.js</span>
-              <span class="tech-tag">YouTube API</span>
-              <span class="tech-tag">MongoDB</span>
+
+            <div class="piano-controls">
+              <div class="control-item">
+                <label for="main-volume">Volume</label>
+                <input type="range" id="main-volume" min="0" max="100" value="70" />
+              </div>
+              <div class="control-item">
+                <label for="main-waveform">Sound</label>
+                <select id="main-waveform">
+                  <option value="sine">Sine</option>
+                  <option value="triangle">Triangle</option>
+                  <option value="sawtooth">Sawtooth</option>
+                  <option value="square">Square</option>
+                </select>
+              </div>
+              <div class="control-item">
+                <label for="main-octave">Octave</label>
+                <select id="main-octave">
+                  <option value="3">Low</option>
+                  <option value="4" selected>Middle</option>
+                  <option value="5">High</option>
+                </select>
+              </div>
             </div>
-            <span class="project-status" data-status="in-progress">In Progress</span>
-          </div>
-          
-          <div class="project-card">
-            <i class="fas fa-robot project-icon"></i>
-            <h3>AI Study Assistant</h3>
-            <p>AI-powered study assistant that helps with JEE preparation, generates practice questions, tracks progress, and provides personalized learning recommendations.</p>
-            <div class="project-tech">
-              <span class="tech-tag">Python</span>
-              <span class="tech-tag">OpenAI API</span>
-              <span class="tech-tag">FastAPI</span>
-              <span class="tech-tag">PostgreSQL</span>
+
+            <div class="piano-keys-wrapper">
+              <div class="piano-main">
+                <div class="white-keys">
+                  <div class="key white" data-note="C" data-key="a">
+                    <div class="label">C</div>
+                  </div>
+                  <div class="key white" data-note="D" data-key="s">
+                    <div class="label">D</div>
+                  </div>
+                  <div class="key white" data-note="E" data-key="d">
+                    <div class="label">E</div>
+                  </div>
+                  <div class="key white" data-note="F" data-key="f">
+                    <div class="label">F</div>
+                  </div>
+                  <div class="key white" data-note="G" data-key="g">
+                    <div class="label">G</div>
+                  </div>
+                  <div class="key white" data-note="A" data-key="h">
+                    <div class="label">A</div>
+                  </div>
+                  <div class="key white" data-note="B" data-key="j">
+                    <div class="label">B</div>
+                  </div>
+                  <div class="key white" data-note="C" data-key="k" data-octave="5">
+                    <div class="label">C</div>
+                  </div>
+                </div>
+                <div class="black-keys-overlay">
+                  <div class="key black" data-note="C#" data-key="w" style="left: 10.5%">
+                    <div class="label">C#</div>
+                  </div>
+                  <div class="key black" data-note="D#" data-key="e" style="left: 23%">
+                    <div class="label">D#</div>
+                  </div>
+                  <div class="key black" data-note="F#" data-key="t" style="left: 48%">
+                    <div class="label">F#</div>
+                  </div>
+                  <div class="key black" data-note="G#" data-key="y" style="left: 60.5%">
+                    <div class="label">G#</div>
+                  </div>
+                  <div class="key black" data-note="A#" data-key="u" style="left: 73%">
+                    <div class="label">A#</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <span class="project-status" data-status="coming-soon">Coming Soon</span>
+
+            <div class="piano-status">
+              <p class="hint-text">Use keys A-K to play • Swipe to see more showcase</p>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Contact Section -->
-      <footer class="site-footer">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>Connect With Me</h3>
-            <ul class="footer-links">
-              <li><a href="mailto:pinkypandey53863@gmail.com"><i class="fas fa-envelope"></i> Email</a></li>
-            </ul>
-            <div class="social-links">
-              <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-            </div>
-          </div>
-          <div class="footer-section">
-            <h3>Quick Links</h3>
-            <ul class="footer-links">
-              <li><a href="#/"><i class="fas fa-home"></i> Home</a></li>
-              <li><a href="#/piano"><i class="fas fa-music"></i> Piano</a></li>
-              <li><a href="#/blogs"><i class="fas fa-blog"></i> Blogs</a></li>
-              <li><a href="#/study"><i class="fas fa-book"></i> Study</a></li>
-              <li><a href="#/goals"><i class="fas fa-flag"></i> Goals</a></li>
-            </ul>
+    <!-- Blogs Section -->
+    <section id="blogs" class="blogs-section">
+      <div class="container">
+        <h2 class="section-title">Latest Blogs</h2>
+        <div class="blogs-wrapper">
+          <div class="blogs-track" id="dynamic-blogs-track">
+            <!-- Dynamic blogs will be loaded here -->
+            <p style="text-align: center; width: 100%;">Loading latest blogs...</p>
           </div>
         </div>
-        <p class="footer-note">Made with ❤️ in India</p>
-      </footer>
+      </div>
+    </section>
+
+    <!-- Study Section -->
+    <section id="study" class="study-section">
+      <div class="container">
+        <div class="study-layout">
+          <!-- Left: Trophy Animation -->
+          <div class="trophy-container">
+            <main class="cd__main">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                preserveAspectRatio="none" x="0px" y="0px" width="500px" height="800px" viewBox="0 0 500 800">
+                <defs>
+                  <radialGradient id="Gradient_1" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="211.4" fx="0" fy="0"
+                    spreadMethod="pad">
+                    <stop offset="0%" stop-color="#9293D6"></stop>
+                    <stop offset="100%" stop-color="#9293D6" stop-opacity="0"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_2" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="134.5" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, 37.7,-44.75) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#C9EBFA"></stop>
+                    <stop offset="100%" stop-color="#57ABDE"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_3" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="66.1" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, 23.6,-99.85) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#C9E5FA"></stop>
+                    <stop offset="100%" stop-color="#57A0DE"></stop>
+                    <stop offset="100%" stop-color="#5CBDE0"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_4" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="59.9" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, 17.85,-147.3) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#BBD5E8"></stop>
+                    <stop offset="100%" stop-color="#529FCE"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_5" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="107.75" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, -21.9,21.95) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#A8D4F1"></stop>
+                    <stop offset="100%" stop-color="#57A0DE"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_6" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="242.5" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, 36.4,-58.55) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#C9E9FA"></stop>
+                    <stop offset="100%" stop-color="#57A0DE"></stop>
+                  </radialGradient>
+                  <linearGradient id="Gradient_7" gradientUnits="userSpaceOnUse" x1="-131.25" y1="-258.1" x2="131.25"
+                    y2="-258.1" spreadMethod="pad">
+                    <stop offset="0%" stop-color="#5599FF"></stop>
+                    <stop offset="100%" stop-color="#D5E6FF"></stop>
+                  </linearGradient>
+                  <radialGradient id="Gradient_8" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="137.7" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, 76.45,-43.95) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#A8D4F1"></stop>
+                    <stop offset="100%" stop-color="#57A0DE"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_9" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="77.75" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, 26.6,-22.8) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#FFF774"></stop>
+                    <stop offset="100%" stop-color="#FFCC00"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_10" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="51.1" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, -19.85,10.05) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#FFF774"></stop>
+                    <stop offset="100%" stop-color="#FFCC00"></stop>
+                  </radialGradient>
+                  <radialGradient id="Gradient_11" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10.5" fx="0" fy="0"
+                    gradientTransform="matrix( 1, 0, 0, 1, 0.15,-1.95) " spreadMethod="pad">
+                    <stop offset="0%" stop-color="#FFF774"></stop>
+                    <stop offset="100%" stop-color="#FFCC00"></stop>
+                  </radialGradient>
+                  <g id="Symbol_1_0_Layer0_0_FILL">
+                    <path fill="url(#Gradient_1)"
+                      d="M -0.05 -209.05 Q -86.6 -209.05 -147.85 -147.8 -209.05 -86.55 -209.05 0 -209.05 86.6 -147.85 147.8 -86.6 209.05 -0.05 209.05 86.55 209.05 147.8 147.8 209.05 86.6 209.05 0 209.05 -86.55 147.8 -147.8 86.55 -209.05 -0.05 -209.05 Z">
+                    </path>
+                  </g>
+                  <g id="confetti_0_Layer0_0_FILL">
+                    <path fill="#F0A8F9"
+                      d="M -0.45 -11.9 Q -0.45 -12.35 -0.4 -12.8 L -12.35 -12.8 Q -12.4 -12.4 -12.4 -11.95 -12.4 -1.7 -5.15 5.55 2.15 12.85 12.4 12.85 L 12.45 12.85 12.45 0.95 Q 7.1 0.95 3.3 -2.8 -0.45 -6.6 -0.45 -11.9 Z">
+                    </path>
+                  </g>
+                  <g id="star_0_Layer0_0_FILL">
+                    <path fill="#C30DDB"
+                      d="M -6.65 -13.25 L -22.3 -14.5 -16.3 0.05 -22.3 14.55 -6.65 13.3 5.3 23.5 9 8.25 22.35 0.05 9 -8.2 5.3 -23.45 -6.65 -13.25 Z">
+                    </path>
+                  </g>
+                  <g id="base_0_Layer0_0_FILL">
+                    <path fill="url(#Gradient_2)"
+                      d="M 94.8 -17.5 Q 46.3 -42.45 40.4 -70.4 L -40.9 -70.4 Q -55.9 -29.8 -94 -17.45 L 94.8 -17.5 Z">
+                    </path>
+                    <path fill="url(#Gradient_3)"
+                      d="M 40.8 -87.9 Q 34.6 -101.15 40.4 -114.4 L -40.9 -114.4 Q -35.65 -102.7 -40 -87.85 L 40.8 -87.9 Z">
+                    </path>
+                    <path fill="#5599FF"
+                      d="M 100.75 -2.6 Q 103.35 -5.15 103.35 -8.75 103.35 -12.35 100.75 -14.95 98.45 -17.25 95.3 -17.45 95.05 -17.5 94.8 -17.5 L -94 -17.45 Q -94.3 -17.5 -94.6 -17.5 -98.2 -17.5 -100.8 -14.95 -103.35 -12.35 -103.35 -8.75 -103.35 -5.15 -100.8 -2.6 -98.4 -0.2 -95.2 0 -95.05 0 -94.9 0 L 94.4 0 Q 94.5 0 94.6 0 98.2 0 100.75 -2.6 M 40.6 -70.4 Q 44.2 -70.4 46.75 -73 49.35 -75.55 49.35 -79.15 49.35 -82.75 46.75 -85.35 44.45 -87.65 41.3 -87.85 41.05 -87.9 40.8 -87.9 L -40 -87.85 Q -40.3 -87.9 -40.6 -87.9 -44.2 -87.9 -46.8 -85.35 -49.35 -82.75 -49.35 -79.15 -49.35 -75.55 -46.8 -73 -44.4 -70.6 -41.2 -70.4 -41.05 -70.4 -40.9 -70.4 L 40.4 -70.4 Q 40.5 -70.4 40.6 -70.4 M 40.6 -114.4 Q 44.2 -114.4 46.75 -117 49.35 -119.55 49.35 -123.15 49.35 -126.75 46.75 -129.35 44.45 -131.65 41.3 -131.85 41.05 -131.9 29.55 -131.9 L -30.35 -131.9 Q -40.3 -131.9 -40.6 -131.9 -44.2 -131.9 -46.8 -129.35 -49.35 -126.75 -49.35 -123.15 -49.35 -119.55 -46.8 -117 -44.4 -114.6 -41.2 -114.4 -41.05 -114.4 -40.9 -114.4 L 40.4 -114.4 Q 40.5 -114.4 40.6 -114.4 Z">
+                    </path>
+                    <path fill="url(#Gradient_4)"
+                      d="M 24.8 -171.4 Q 12.95 -168.85 0 -168.85 -12.5 -168.85 -24 -171.2 -21.4 -150 -30.35 -131.9 L 29.55 -131.9 Q 23.3 -146.9 24.8 -171.4 Z">
+                    </path>
+                  </g>
+                  <g id="handleL_0_Layer0_0_FILL">
+                    <path fill="url(#Gradient_5)"
+                      d="M -24.6 -65.55 L -24.55 -65.55 Q -17.3 -63.05 -9.65 -59.3 -7.8 -58.4 -5.85 -59.05 -3.9 -59.75 -3 -61.6 -2.05 -63.45 -2.75 -65.4 -3.4 -67.4 -5.25 -68.3 -13.5 -72.35 -21.25 -75 -62.5 -89.6 -74.1 -64.25 -81.45 -49.35 -75.2 -34.25 L -75.2 -34.3 Q -70.9 -23.7 -56.95 -8.9 -56.85 -8.85 -56.85 -8.8 -40.7 7.2 -32.8 16.05 -19.35 30.95 -13.65 44.25 -6.15 61.85 -16.5 67.8 -22.75 70.9 -30.6 70.25 -32.65 70.05 -34.25 71.4 -35.8 72.7 -36 74.8 -36.15 76.85 -34.85 78.45 -33.5 80 -31.45 80.2 -20.65 81.1 -12 76.75 L -12.05 76.75 Q 7.3 67.9 -4.45 40.35 -10.65 25.75 -25.35 9.35 -33.4 0.4 -49.8 -15.9 L -49.7 -15.75 Q -62 -28.8 -65.95 -38.1 -70.45 -49.05 -65.15 -59.8 -55.9 -76.65 -24.6 -65.55 Z">
+                    </path>
+                  </g>
+                  <g id="ribbonBack_0_Layer0_0_FILL">
+                    <path fill="#5599FF" d="M -40.05 7.15 L -40.05 7.2 -33.15 7.2 -48.1 -6.4 -40.05 7.15 Z"></path>
+                    <path fill="#0066FF" d="M 24.95 7.15 L 48.15 7.15 32.8 -7.15 24.95 7.15 Z"></path>
+                  </g>
+                  <g id="cup_0_Layer0_0_FILL">
+                    <path fill="url(#Gradient_6)"
+                      d="M 40.8 -7.3 Q 61.9 -15.5 79.2 -32.8 109.45 -63.05 111.8 -104.9 L 111.8 -249.35 -111.95 -249.35 -111.95 -115.6 Q -111.95 -115.4 -111.95 -115.2 -112 -113.6 -112 -112 -112 -65.6 -79.2 -32.8 -61.55 -15.15 -40 -7 -32.25 -4.1 -24 -2.35 -12.5 0 0 0 12.95 0 24.8 -2.55 33.05 -4.3 40.8 -7.3 Z">
+                    </path>
+                    <path fill="url(#Gradient_7)"
+                      d="M 122.3 -249.35 Q 122.4 -249.35 122.5 -249.35 126.1 -249.35 128.65 -251.95 131.25 -254.5 131.25 -258.1 131.25 -261.7 128.65 -264.3 126.35 -266.6 123.2 -266.8 122.95 -266.85 122.7 -266.85 L -121.9 -266.8 Q -122.2 -266.85 -122.5 -266.85 -126.1 -266.85 -128.7 -264.3 -131.25 -261.7 -131.25 -254.5 -128.7 -251.95 -126.3 -249.55 -123.1 -249.35 -122.95 -249.35 -122.8 -249.35 L -111.95 -249.35 111.8 -249.35 122.3 -249.35 Z">
+                    </path>
+                  </g>
+                  <g id="handleR_0_Layer0_0_FILL">
+                    <path fill="url(#Gradient_8)"
+                      d="M 24.55 -65.55 L 24.6 -65.55 Q 55.9 -76.65 65.15 -59.8 70.45 -49.05 65.95 -38.1 62 -28.8 49.7 -15.75 L 49.8 -15.9 Q 33.4 0.4 25.35 9.35 10.65 25.75 4.45 40.35 -7.3 67.9 12.05 76.75 L 12 76.75 Q 20.65 81.1 31.45 80.2 33.5 80 34.85 78.45 36.15 76.85 36 74.8 35.8 72.7 34.25 71.4 32.65 70.05 30.6 70.25 22.75 70.9 16.5 67.8 6.15 61.85 13.65 44.25 19.35 30.95 32.8 16.05 40.7 7.2 56.85 -8.8 56.85 -8.85 56.95 -8.9 70.9 -23.7 75.2 -34.3 L 75.2 -34.25 Q 81.45 -49.35 74.1 -64.25 62.5 -89.6 21.25 -75 13.5 -72.35 5.25 -68.3 3.4 -67.4 2.75 -65.4 2.05 -63.45 3 -61.6 3.9 -59.75 5.85 -59.05 7.8 -58.4 9.65 -59.3 17.3 -63.05 24.55 -65.55 Z">
+                    </path>
+                  </g>
+                  <g id="coin_0_Layer1_0_FILL">
+                    <path fill="#FFCD03"
+                      d="M -25.85 -52.85 L -33.25 -65.8 Q -38.95 -65.55 -38.85 -59.7 L -38.85 -17.25 Q -35.75 -24.15 -30 -29.95 -29.65 -30.3 -29.3 -30.6 -28.6 -31.3 -27.9 -31.9 -26.9 -32.8 -25.85 -33.6 L -25.85 -52.85 M 18 -65.85 L 24.95 -52.85 24.95 -34.3 Q 27.55 -32.35 29.95 -29.95 34.95 -24.95 37.95 -19.1 L 37.95 -61.5 Q 37.7 -65.6 33.6 -65.85 L 30.15 -65.85 18 -65.85 Z">
+                    </path>
+                    <path fill="#0066FF"
+                      d="M 24.95 -52.85 L 18 -65.85 -3.25 -105.55 -12.35 -122.5 -12.35 -122.55 -20.4 -136.1 -72.7 -136.1 -65.6 -122.5 -33.25 -65.8 -25.85 -52.85 24.95 -52.85 Z">
+                    </path>
+                    <path fill="#5599FF"
+                      d="M 52.65 -122.55 L 60.5 -136.85 10.55 -136.85 -3.25 -105.55 18 -65.85 30.15 -65.85 52.65 -122.55 Z">
+                    </path>
+                  </g>
+                  <g id="coin_0_Layer0_0_FILL">
+                    <path fill="url(#Gradient_9)"
+                      d="M 37.95 -19.15 Q 34.95 -25 29.95 -30 27.55 -32.4 24.95 -34.35 15.7 -41.2 4 -42.2 2.05 -42.4 0 -42.4 -12.3 -42.4 -22.1 -36.25 -24 -35.1 -25.85 -33.65 -26.9 -32.85 -27.9 -31.95 -28.6 -31.35 -29.3 -30.65 -29.65 -30.35 -30 -30 -35.75 -24.2 -38.85 -17.3 -42.4 -9.4 -42.4 0 -42.4 17.55 -30 29.95 -17.55 42.4 0 42.4 2.05 42.4 4 42.25 19 40.95 29.95 29.95 42.4 17.55 42.4 0 42.4 -10.5 37.95 -19.15 M 2.7 -28.35 Q 12.8 -27.5 20.15 -20.15 28.55 -11.8 28.55 0 28.55 11.8 20.15 20.15 12.8 27.55 2.7 28.45 1.4 28.55 0 28.55 -11.8 28.55 -20.15 20.15 -21.2 19.1 -22.1 18.05 -26.55 12.7 -27.9 6.1 -28.5 3.15 -28.5 0 -28.5 -3.15 -27.9 -6.05 -26.55 -12.7 -22.1 -18 -21.2 -19.1 -20.15 -20.15 -11.8 -28.5 0 -28.5 1.4 -28.5 2.7 -28.35 Z">
+                    </path>
+                    <path fill="url(#Gradient_10)"
+                      d="M 20.15 -20.15 Q 12.8 -27.5 2.7 -28.35 1.4 -28.5 0 -28.5 -11.8 -28.5 -20.15 -20.15 -21.2 -19.1 -22.1 -18 -26.55 -12.7 -27.9 -6.05 -28.5 -3.15 -28.5 0 -28.5 3.15 -27.9 6.1 -26.55 12.7 -22.1 18.05 -21.2 19.1 -20.15 20.15 -11.8 28.55 0 28.55 1.4 28.55 2.7 28.45 12.8 27.55 20.15 20.15 28.55 11.8 28.55 0 28.55 -11.8 20.15 -20.15 M -3.4 -18.05 L -3.05 -19.05 3.25 -19.05 15.25 14.35 13.9 14.35 9.45 14.35 7.05 7.55 -6.9 7.55 -7.25 8.55 -9.3 14.35 -9.95 14.35 -15 14.35 -3.4 -18.05 Z">
+                    </path>
+                    <path fill="#FFCE05" d="M -7.25 8.55 L -7.9 8.55 -9.95 14.35 -9.3 14.35 -7.25 8.55 Z"></path>
+                    <path fill="#FFF570"
+                      d="M -7.25 8.55 L -6.9 7.55 7.05 7.55 9.45 14.35 13.9 14.35 2.25 -18.05 -3.4 -18.05 -15 14.35 -9.95 14.35 -7.9 8.55 -7.25 8.55 M -0.9 -11.45 L -0.55 -10.5 0.1 -12.45 5.5 3.1 4.15 3.1 4.5 4.1 -6.4 4.1 -0.9 -11.45 Z">
+                    </path>
+                    <path fill="url(#Gradient_11)" d="M 4.15 3.1 L 5.5 3.1 0.1 -12.45 -0.55 -10.5 -5.4 3.1 4.15 3.1 Z">
+                    </path>
+                    <path fill="#FFCD03"
+                      d="M -0.55 -10.5 L -0.9 -11.45 -6.4 4.1 4.5 4.1 4.15 3.1 -5.4 3.1 -0.55 -10.5 M -3.05 -19.05 L -3.4 -18.05 2.25 -18.05 13.9 14.35 15.25 14.35 3.25 -19.05 -3.05 -19.05 Z">
+                    </path>
+                  </g>
+                </defs>
+                <g id="shadow" transform="matrix( 1, 0, 0, 1, 250,742.25) ">
+                  <g transform="matrix( 1, 0, 0, 0.1714935302734375, 0.1,0.05) ">
+                    <use xlink:href="#Symbol_1_0_Layer0_0_FILL"></use>
+                  </g>
+                </g>
+                <g id="confetti1" transform="matrix( 0.25881958, 0.96591186, -0.96591186, 0.25881958, 179.6,389.35) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti2" transform="matrix( 1, 0, 0, 1, 210.4,392.1) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti3" transform="matrix( 0.8660278, 0.4999847, -0.4999847, 0.8660278, 192.1,376.55) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti4" transform="matrix( 0.25881958, 0.96591186, -0.96591186, 0.25881958, 216.25,373.3) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti5" transform="matrix( 0.8660278, -0.4999847, 0.4999847, 0.8660278, 207.45,416.7) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti6" transform="matrix( 0.7070922, -0.7070922, 0.7070922, 0.7070922, 273.15,383.75) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti7" transform="matrix( 0.5, -0.866012, 0.866012, 0.5, 335.9,408.9) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti8" transform="matrix( 0.7070922, -0.7070922, 0.7070922, 0.7070922, 176.15,423.05) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti9" transform="matrix( 0.2588195, -0.965911, 0.965911, 0.2588195, 317.85,429.15) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti10" transform="matrix( 0, 1, -1, 0, 248.45,409.15) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="confetti11" transform="matrix( -0.965927, 0.258789, -0.258789, -0.965927, 236,421.95) ">
+                  <use xlink:href="#confetti_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="star2" transform="matrix( 0.5, -0.866012, 0.866012, 0.5, 210.4,404.9) ">
+                  <use xlink:href="#star_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="star3" transform="matrix( 0.777572, -0.628784, 0.628784, 0.777572, 266.1,374.05) ">
+                  <use xlink:href="#star_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="star1" transform="matrix( 0.602416, 0.798156, -0.798156, 0.602416, 296,429.35) ">
+                  <use xlink:href="#star_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="base" transform="matrix( 1, 0, 0, 1, 250,747.2) ">
+                  <use xlink:href="#base_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="handleL" transform="matrix( 1, 0, 0, 1, 147.35,429.3) ">
+                  <use xlink:href="#handleL_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="medalBack" transform="matrix( 1, 0, 0, 1, 307.85,317.15) ">
+                  <use xlink:href="#ribbonBack_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="cup" transform="matrix( 1, 0, 0, 1, 250,578.35) ">
+                  <use xlink:href="#cup_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="handleR" transform="matrix( 1, 0, 0, 1, 348.4,430.85) ">
+                  <use xlink:href="#handleR_0_Layer0_0_FILL"></use>
+                </g>
+                <g id="medal" transform="matrix( 1, 0, 0, 1, 280.15,446.9) ">
+                  <use xlink:href="#coin_0_Layer1_0_FILL"></use>
+                  <use xlink:href="#coin_0_Layer0_0_FILL"></use>
+                </g>
+              </svg>
+            </main>
+          </div>
+
+          <!-- Right: Content -->
+          <div class="study-content">
+            <h2 class="section-title">Academic Journey</h2>
+            <div class="achievement-card">
+              <div class="stat-highlight">
+                <span class="stat-value">93.2%</span>
+                <span class="stat-label">ICSE Class 10</span>
+              </div>
+              <p class="study-description">
+                Proud to have secured <strong>93.2% in ICSE Class 10</strong>. I'm dedicated to carrying this momentum
+                into <strong>Class 12 ISC</strong>.
+              </p>
+              <div class="goals-grid">
+                <div class="goal-item">
+                  <i class="fas fa-rocket"></i>
+                  <span>Preparing for <strong>JEE 2027</strong></span>
+                </div>
+                <div class="goal-item">
+                  <i class="fas fa-code"></i>
+                  <span>Mastering <strong>Frontend & Backend</strong></span>
+                </div>
+                <div class="goal-item">
+                  <i class="fas fa-keyboard"></i>
+                  <span>Developing <strong>Piano Skills</strong></span>
+                </div>
+                <div class="goal-item">
+                  <i class="fas fa-heart"></i>
+                  <span>Making my <strong>parents proud</strong></span>
+                </div>
+              </div>
+              <div class="vibe-coding-badge">
+                <i class="fas fa-bolt"></i> Leaning into <strong>Vibe Coding</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="contact" class="cta-section">
+      <div class="cta-container">
+        <div class="cta-content">
+          <h2 class="cta-title">Let's build something together</h2>
+          <p class="cta-subtitle">Have a project in mind or just want to say hi?</p>
+          <div class="cta-card">
+            <a href="mailto:nowrajpandey36835@gmail.com" class="cta-email-link">
+              <i class="fas fa-envelope"></i>
+              <span>nowrajpandey36835@gmail.com</span>
+            </a>
+          </div>
+
+          <div class="cta-socials">
+            <a href="#" class="social-icon" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Reader Modal -->
+    <div id="blog-reader-modal" class="blog-reader-modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <button class="modal-close">&times;</button>
+        <div class="reader-image">
+          <img id="reader-img" src="" alt="">
+        </div>
+        <div class="reader-header">
+          <h1 id="reader-title"></h1>
+          <span id="reader-date" class="blog-date"></span>
+        </div>
+        <div id="reader-body" class="reader-body">
+          <!-- Full blog content -->
+        </div>
+      </div>
     </div>
 
-    <!-- Piano Page -->
-    <div id="piano-content" class="page-content">
-      <div class="page-header">
-        <h1 class="page-title">🎹 Piano Journey</h1>
-        <p class="page-subtitle">My musical adventure with classical pieces and modern compositions</p>
-      </div>
-      
-      <div class="page-description">
-        <p>My musical journey with piano began as a way to express creativity beyond code. I'm currently learning classical pieces and exploring how music theory intersects with programming concepts.</p>
-      </div>
-      
-      <!-- Piano Videos Section -->
-      <section class="piano-videos-section">
-        <h2 class="section-title">My Piano Performances</h2>
-        <div id="pianoVideosContainer" class="videos-grid">
-          <div class="loading-state">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Loading piano performances...</p>
-            <p class="loading-subtext">If content doesn't load, please check your internet connection.</p>
-          </div>
-        </div>
-      </section>
-      
-      <div class="content-grid">
-        <div class="content-card piano-card">
-          <div class="card-header">
-            <i class="fas fa-music card-icon"></i>
-            <h3>Current Pieces</h3>
-          </div>
-          <ul class="styled-list">
-            <li><i class="fas fa-circle"></i> Moonlight Sonata - Beethoven</li>
-            <li><i class="fas fa-circle"></i> Clair de Lune - Debussy</li>
-            <li><i class="fas fa-circle"></i> River Flows in You - Yiruma</li>
-          </ul>
-        </div>
-        <div class="content-card piano-card">
-          <div class="card-header">
-            <i class="fas fa-calendar-alt card-icon"></i>
-            <h3>Practice Routine</h3>
-          </div>
-          <ul class="styled-list">
-            <li><i class="fas fa-check-circle"></i> Daily scales and arpeggios</li>
-            <li><i class="fas fa-check-circle"></i> Sight reading exercises</li>
-            <li><i class="fas fa-check-circle"></i> Piece learning and refinement</li>
-          </ul>
-        </div>
-        <div class="content-card piano-card">
-          <div class="card-header">
-            <i class="fas fa-bullseye card-icon"></i>
-            <h3>Musical Goals</h3>
-          </div>
-          <ul class="styled-list">
-            <li><i class="fas fa-star"></i> Master classical repertoire</li>
-            <li><i class="fas fa-star"></i> Learn music composition</li>
-            <li><i class="fas fa-star"></i> Combine coding with music creation</li>
-          </ul>
-        </div>
-      </div>
-    </div>
 
-    <!-- Blogs Page -->
-    <div id="blogs-content" class="page-content">
-      <div class="page-header">
-        <h1 class="page-title">📝 Blogs & Thoughts</h1>
-        <p class="page-subtitle">Sharing my journey through technology, music, and personal growth</p>
-      </div>
-      
-      <div class="page-description">
-        <p>Here you'll find insights about programming, learning experiences, and creative pursuits. I write about technology, education, and the intersection of code and music.</p>
-      </div>
-      
-      <div id="blogsList" class="content-grid">
-        <div class="loading-state">
-          <i class="fas fa-spinner fa-spin"></i>
-          <p>Loading blog posts...</p>
-          <p class="loading-subtext">If content doesn't load, please check your internet connection.</p>
-        </div>
-      </div>
-    </div>
+    <script>
+      // --- Navigation Logic ---
+      const links = document.querySelectorAll(".nav a");
+      const activeBubble = document.querySelector(".active-bubble");
+      const hoverBubble = document.querySelector(".hover-bubble");
+      const nav = document.querySelector(".nav");
+      const hamburger = document.querySelector(".hamburger-menu");
+      const navContainer = document.querySelector(".nav-container");
 
-    <!-- Study Page -->
-    <div id="study-content" class="page-content">
-      <div class="page-header">
-        <h1 class="page-title">📚 Study & Learning</h1>
-        <p class="page-subtitle">My educational journey and academic achievements</p>
-      </div>
-      
-      <div class="page-description">
-        <p>My educational journey has been marked by consistent growth and academic excellence. I believe in combining structured learning with practical application to achieve meaningful results.</p>
-      </div>
-      
-      <div class="content-grid">
-        <div class="content-card study-card">
-          <div class="card-header">
-            <i class="fas fa-graduation-cap card-icon"></i>
-            <h3>🏫 Educational Journey</h3>
-          </div>
-          <div class="education-timeline">
-            <div class="education-item">
-              <div class="education-period">2021 - Present</div>
-              <div class="education-details">
-                <h4>West Point School</h4>
-                <p>Class 6 to 10 • ICSE Curriculum</p>
-                <p class="education-highlight">Currently enrolled</p>
-              </div>
-            </div>
-            <div class="education-item">
-              <div class="education-period">2016 - 2021</div>
-              <div class="education-details">
-                <h4>Tiny Tot's School</h4>
-                <p>KG to Class 5 • Foundation Years</p>
-                <p class="education-highlight">Strong academic foundation</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="content-card achievement-card">
-          <div class="card-header">
-            <i class="fas fa-trophy card-icon"></i>
-            <h3>🎓 Academic Excellence</h3>
-          </div>
-          <div class="achievement-badge">
-            <div class="achievement-icon">🏆</div>
-            <div class="achievement-details">
-              <h4>Class 10 ICSE Board</h4>
-              <p class="achievement-score">93.2% Overall Percentage</p>
-              <p class="achievement-year">2024</p>
-            </div>
-          </div>
-          <div class="achievement-description">
-            Outstanding performance in ICSE examinations demonstrating strong academic capabilities and consistent dedication to learning.
-          </div>
-          <div class="achievement-highlights">
-            <div class="highlight-item">
-              <i class="fas fa-check"></i>
-              <span>Top performer in Mathematics</span>
-            </div>
-            <div class="highlight-item">
-              <i class="fas fa-check"></i>
-              <span>Excellent in Science subjects</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="content-card focus-card">
-          <div class="card-header">
-            <i class="fas fa-book-open card-icon"></i>
-            <h3>📚 Current Focus</h3>
-          </div>
-          <div class="focus-list">
-            <div class="focus-item">
-              <i class="fas fa-code"></i>
-              <div>
-                <strong>Data Structures & Algorithms</strong>
-                <span>Mastering core CS concepts</span>
-              </div>
-            </div>
-            <div class="focus-item">
-              <i class="fas fa-globe"></i>
-              <div>
-                <strong>Web Development Stack</strong>
-                <span>HTML, CSS, JavaScript, React</span>
-              </div>
-            </div>
-            <div class="focus-item">
-              <i class="fas fa-calculator"></i>
-              <div>
-                <strong>Mathematics for Programming</strong>
-                <span>Advanced math concepts</span>
-              </div>
-            </div>
-            <div class="focus-item">
-              <i class="fas fa-book"></i>
-              <div>
-                <strong>JEE Preparation</strong>
-                <span>Physics, Chemistry, Mathematics</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Goals Page -->
-    <div id="goals-content" class="page-content">
-      <div class="page-header">
-        <h1 class="page-title">🌟 Goals & Aspirations</h1>
-        <p class="page-subtitle">My roadmap for technology, education, and personal growth</p>
-      </div>
-      
-      <div class="page-description">
-        <p>Setting clear goals has been crucial in my journey. Here are my current objectives and long-term aspirations in technology, education, and personal growth.</p>
-      </div>
-      
-      <div class="goals-timeline">
-        <div class="timeline-item">
-          <div class="timeline-period">🎯 Short-term (2024-2025)</div>
-          <div class="timeline-content">
-            <h3>Immediate Objectives</h3>
-            <ul class="styled-list">
-              <li><i class="fas fa-rocket"></i> Clear JEE Advanced examination with excellent rank</li>
-              <li><i class="fas fa-code"></i> Master full-stack web development</li>
-              <li><i class="fas fa-project-diagram"></i> Build meaningful real-world projects</li>
-              <li><i class="fas fa-users"></i> Contribute to open-source communities</li>
-              <li><i class="fas fa-music"></i> Advance piano skills to intermediate level</li>
-            </ul>
-          </div>
-        </div>
-        
-        <div class="timeline-item">
-          <div class="timeline-period">🚀 Medium-term (2025-2027)</div>
-          <div class="timeline-content">
-            <h3>Academic & Career Goals</h3>
-            <ul class="styled-list">
-              <li><i class="fas fa-graduation-cap"></i> Pursue Computer Science degree from premier institute</li>
-              <li><i class="fas fa-brain"></i> Develop expertise in machine learning and AI</li>
-              <li><i class="fas fa-briefcase"></i> Intern at leading tech companies</li>
-              <li><i class="fas fa-network-wired"></i> Establish strong professional network</li>
-              <li><i class="fas fa-globe"></i> Participate in international coding competitions</li>
-            </ul>
-          </div>
-        </div>
-        
-        <div class="timeline-item">
-          <div class="timeline-period">💫 Long-term (2027+)</div>
-          <div class="timeline-content">
-            <h3>Life Vision & Impact</h3>
-            <ul class="styled-list">
-              <li><i class="fas fa-lightbulb"></i> Work on impactful technology that solves real problems</li>
-              <li><i class="fas fa-hands-helping"></i> Mentor aspiring developers and students</li>
-              <li><i class="fas fa-balance-scale"></i> Balance successful tech career with music passion</li>
-              <li><i class="fas fa-seedling"></i> Continue lifelong learning and skill development</li>
-              <li><i class="fas fa-heart"></i> Give back to community through education initiatives</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Back to Top Button -->
-  <a href="#" class="back-to-top" id="backToTop">
-    <i class="fas fa-arrow-up"></i>
-  </a>
-
-  <!-- Scripts -->
-  <script src="sounds.js"></script>
-  <script src="main.js"></script>
-  <script src="firebase-loader.js"></script>
-  
-  <!-- Navigation Script -->
-  <script>
-  // Simple page navigation - FIXED VERSION
-  document.addEventListener('DOMContentLoaded', function() {
-    // Function to show page
-    function showPage(pageId) {
-      // Hide all pages
-      document.querySelectorAll('.page-content').forEach(page => {
-        page.style.display = 'none';
-        page.classList.remove('active');
-      });
-      
-      // Show selected page
-      const targetPage = document.getElementById(pageId);
-      if (targetPage) {
-        targetPage.style.display = 'block';
-        setTimeout(() => {
-          targetPage.classList.add('active');
-        }, 10);
-        
-        // Scroll to top smoothly
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-        
-        // Load content for specific pages
-        if (pageId === 'piano-content') {
-          setTimeout(() => {
-            if (window.loadPianoVideos) loadPianoVideos();
-          }, 300);
-        } else if (pageId === 'blogs-content') {
-          setTimeout(() => {
-            if (window.loadBlogs) loadBlogs();
-          }, 300);
-        }
+      function moveBubble(element, bubble) {
+        bubble.style.left = `${element.offsetLeft}px`;
+        bubble.style.width = `${element.offsetWidth}px`;
       }
-    }
 
-    // Handle hash changes
-    function handleHashChange() {
-      const hash = window.location.hash.substring(2); // Remove '#/'
-      const pageMap = {
-        '': 'home-content',
-        'piano': 'piano-content',
-        'blogs': 'blogs-content',
-        'study': 'study-content',
-        'goals': 'goals-content'
-      };
-      
-      const pageId = pageMap[hash] || 'home-content';
-      showPage(pageId);
-      
-      // Update active nav links
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        const linkHash = link.getAttribute('href').substring(2); // Remove '#/'
-        if ((hash === '' && linkHash === '') || (hash === linkHash)) {
-          link.classList.add('active');
-        }
-      });
-      
-      // Update cursor visibility
-      const cursor = document.querySelector('.cursor-effect');
-      if (cursor) {
-        if (pageId === 'home-content') {
-          cursor.style.display = 'block';
-        } else {
-          cursor.style.display = 'none';
-        }
-      }
-    }
+      const initialActive = document.querySelector(".nav a.active");
+      if (initialActive)
+        setTimeout(() => moveBubble(initialActive, activeBubble), 10);
 
-    // Set up navigation links
-    function setupNavLinks() {
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function(e) {
+      // Smooth scrolling for navigation
+      links.forEach((link) => {
+        link.addEventListener("click", (e) => {
           e.preventDefault();
-          const href = this.getAttribute('href');
-          window.location.hash = href;
+          const targetId = link.getAttribute("href");
+          if (targetId.startsWith("#")) {
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              // Update active state
+              links.forEach((l) => l.classList.remove("active"));
+              link.classList.add("active");
+              moveBubble(link, activeBubble);
+
+              // Smooth scroll
+              window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: "smooth",
+              });
+
+              // Close mobile menu if open
+              navContainer.classList.remove("open");
+              hamburger.classList.remove("active");
+            }
+          }
+        });
+
+        link.addEventListener("mouseenter", () => {
+          hoverBubble.style.opacity = "1";
+          moveBubble(link, hoverBubble);
         });
       });
-    }
 
-    // Initialize navigation
-    function initNavigation() {
-      // Set up links
-      setupNavLinks();
-      
-      // Handle initial hash
-      if (!window.location.hash || window.location.hash === '#') {
-        window.location.hash = '#/';
-      }
-      
-      // Initial page load
-      handleHashChange();
-      
-      // Listen for hash changes
-      window.addEventListener('hashchange', handleHashChange);
-      
-      // Also listen for popstate (back/forward buttons)
-      window.addEventListener('popstate', handleHashChange);
-    }
+      nav.addEventListener(
+        "mouseleave",
+        () => (hoverBubble.style.opacity = "0"),
+      );
 
-    // Start navigation
-    initNavigation();
-    
-    // Back to top button
-    const backToTop = document.getElementById('backToTop');
-    if (backToTop) {
-      backToTop.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+      hamburger.addEventListener("click", () => {
+        navContainer.classList.toggle("open");
+        hamburger.classList.toggle("active");
       });
-      
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-          backToTop.classList.add('visible');
+
+      // Audio Logic
+      const audio = document.getElementById("bg-music");
+      const soundBtn = document.getElementById("sound-toggle");
+      const iconOff = document.querySelector(".icon-off");
+      const iconOn = document.querySelector(".icon-on");
+      let hasInteracted = false;
+
+      function updateIcon(isPlaying) {
+        if (isPlaying) {
+          iconOff.style.display = "none";
+          iconOn.style.display = "block";
+          soundBtn.classList.add("playing");
         } else {
-          backToTop.classList.remove('visible');
+          iconOff.style.display = "block";
+          iconOn.style.display = "none";
+          soundBtn.classList.remove("playing");
         }
-      });
-    }
-    
-    // Hide loading screen
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loadingScreen');
-        if (loadingScreen) {
-          loadingScreen.classList.add('hidden');
-          setTimeout(() => {
-            loadingScreen.style.display = 'none';
-          }, 500);
+      }
+
+      function playAudio() {
+        if (!hasInteracted) {
+          hasInteracted = true;
+          audio.volume = 0.5;
+          audio
+            .play()
+            .then(() => updateIcon(true))
+            .catch((e) => console.log("Audio autoplay blocked:", e));
         }
-      }, 1000);
-    });
-    
-    // Mobile menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const nav = document.querySelector('.nav');
-    if (menuToggle && nav) {
-      menuToggle.addEventListener('click', (e) => {
+      }
+      window.addEventListener("scroll", playAudio, { once: true });
+      window.addEventListener("click", playAudio, { once: true });
+      soundBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        nav.classList.toggle('active');
-        menuToggle.querySelector('i').className = nav.classList.contains('active') 
-          ? 'fas fa-times' 
-          : 'fas fa-bars';
-      });
-      
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!nav.contains(e.target) && !menuToggle.contains(e.target)) {
-          nav.classList.remove('active');
-          menuToggle.querySelector('i').className = 'fas fa-bars';
+        if (audio.paused) {
+          audio.play();
+          updateIcon(true);
+        } else {
+          audio.pause();
+          updateIcon(false);
         }
       });
-    }
-  });
-  </script>
+
+
+
+      // Remove Spline logo
+      const observer = new MutationObserver((mutations) => {
+        const viewer = document.querySelector("spline-viewer");
+        if (viewer && viewer.shadowRoot) {
+          // 1. Target the logo div specifically
+          const logo = viewer.shadowRoot.querySelector("#logo");
+          if (logo) {
+            logo.remove();
+            console.log("Logo removed via MutationObserver");
+          }
+
+          // 2. Target the link that often wraps the logo
+          const splineLink = viewer.shadowRoot.querySelector(
+            'a[href*="spline.design"]',
+          );
+          if (splineLink) {
+            splineLink.style.display = "none";
+            splineLink.style.visibility = "hidden";
+          }
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // --- Typewriter Effect ---
+      const typewriterElement = document.querySelector(".typewriter-dynamic");
+      const words = ["smart", "chaotic", "mad", "data-driven", "resilient"];
+      let wordIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      let typeSpeed = 100;
+
+      function type() {
+        const currentWord = words[wordIndex];
+
+        if (isDeleting) {
+          typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
+          charIndex--;
+          typeSpeed = 50;
+        } else {
+          typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
+          charIndex++;
+          typeSpeed = 150;
+        }
+
+        if (!isDeleting && charIndex === currentWord.length) {
+          isDeleting = true;
+          typeSpeed = 2000; // Pause at the end
+        } else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          typeSpeed = 500; // Pause before starting next word
+        }
+
+        setTimeout(type, typeSpeed);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (typewriterElement) {
+          type();
+        }
+      });
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="robot-logic.js"></script>
+    <!-- Embedded Piano Script -->
+    <script src="piano-embedded.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+      import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBUHPDj1TP2rU7dXGtiQ1AdnU24yoB5JuI",
+        authDomain: "my-portfolio-4b61e.firebaseapp.com",
+        projectId: "my-portfolio-4b61e",
+        storageBucket: "my-portfolio-4b61e.firebasestorage.app",
+        messagingSenderId: "1095219957957",
+        appId: "1:1095219957957:web:3692480026f6a1ee6e60ac",
+        measurementId: "G-73CFL03NP7"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore();
+
+      // --- Dynamic Blogs Loader ---
+      async function loadBlogs() {
+        const blogsTrack = document.getElementById('dynamic-blogs-track');
+        try {
+          const q = query(collection(db, "blogs"), orderBy("createdAt", "desc"));
+          const snapshot = await getDocs(q);
+
+          let blogsData = [];
+          snapshot.forEach(docSnap => blogsData.push({ ...docSnap.data(), id: docSnap.id }));
+
+          // Fill with "Coming Soon" placeholders if less than 3
+          while (blogsData.length < 3) {
+            blogsData.push({
+              title: "Exciting Content Coming Soon",
+              imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+              content: "I'm currently working on a new insight to share with you. Check back soon for the full story!",
+              isPlaceholder: true
+            });
+          }
+
+          blogsTrack.innerHTML = '';
+
+          function createBlogCard(blog) {
+            const date = blog.createdAt?.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) || 'Coming Soon';
+            const card = document.createElement('div');
+            card.className = `blog-card ${blog.isPlaceholder ? 'coming-soon' : ''}`;
+            card.innerHTML = `
+              <div class="blog-image">
+                <img src="${blog.imageUrl}" alt="${blog.title}">
+              </div>
+              <div class="blog-content">
+                <span class="blog-date">${date}</span>
+                <h3>${blog.title}</h3>
+                <p>${blog.content.substring(0, 100)}...</p>
+                ${blog.isPlaceholder ? '' : `<a href="#" class="read-more" data-id="${blog.id}">Read More &rarr;</a>`}
+              </div>
+            `;
+
+            if (!blog.isPlaceholder) {
+              card.querySelector('.read-more').onclick = (e) => {
+                e.preventDefault();
+                openBlogReader(blog, date);
+              };
+            }
+            return card;
+          }
+
+          // Populate track
+          blogsData.forEach(blog => blogsTrack.appendChild(createBlogCard(blog)));
+
+          // CRITICAL: Clone for infinite loop (double the content)
+          const originalCards = Array.from(blogsTrack.children);
+          originalCards.forEach(card => {
+            const clone = card.cloneNode(true);
+            if (!card.classList.contains('coming-soon')) {
+              // Re-attach click handler to clone
+              const blog = blogsData.find(b => b.id === card.querySelector('.read-more')?.dataset.id);
+              if (blog) {
+                const date = blog.createdAt?.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) || 'Recently';
+                clone.querySelector('.read-more').onclick = (e) => {
+                  e.preventDefault();
+                  openBlogReader(blog, date);
+                };
+              }
+            }
+            blogsTrack.appendChild(clone);
+          });
+
+        } catch (error) {
+          console.error("Error loading blogs:", error);
+          blogsTrack.innerHTML = '<p style="text-align: center; width: 100%;">Error loading blogs.</p>';
+        }
+      }
+
+      // --- Modal Logic ---
+      const modal = document.getElementById('blog-reader-modal');
+      const modalClose = modal.querySelector('.modal-close');
+      const modalBackdrop = modal.querySelector('.modal-backdrop');
+
+      function openBlogReader(blog, date) {
+        document.getElementById('reader-img').src = blog.imageUrl;
+        document.getElementById('reader-title').textContent = blog.title;
+        document.getElementById('reader-date').textContent = date;
+        document.getElementById('reader-body').textContent = blog.content;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scroll
+      }
+
+      function closeReader() {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+
+      modalClose.onclick = closeReader;
+      modalBackdrop.onclick = closeReader;
+
+      // --- Dynamic Piano Loader ---
+      async function loadPianoVideos() {
+        const videoStack = document.getElementById('video-stack');
+        try {
+          const q = query(collection(db, "piano-videos"), orderBy("createdAt", "desc"));
+          const snapshot = await getDocs(q);
+
+          let videos = [];
+          snapshot.forEach(docSnap => videos.push(docSnap.data()));
+
+          // Placeholder logic for piano
+          if (videos.length === 0) {
+            videoStack.innerHTML = `
+              <div class="stack-card coming-soon" data-index="0">
+                <div class="coming-soon-badge">New Performance Coming Soon</div>
+              </div>
+              <div class="stack-card coming-soon" data-index="1">
+                <div class="coming-soon-badge">New Performance Coming Soon</div>
+              </div>
+            `;
+          } else {
+            videoStack.innerHTML = '';
+            videos.forEach((video, index) => {
+              const card = document.createElement('div');
+              card.className = 'stack-card';
+              card.dataset.index = index;
+              card.innerHTML = `
+                <iframe src="${video.url}" title="${video.title}"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <div class="card-overlay">
+                  <h3>${video.title}</h3>
+                  <p>Piano Performance</p>
+                </div>
+              `;
+              videoStack.appendChild(card);
+            });
+          }
+
+          // Trigger visual update for stack
+          if (window.refreshStack) window.refreshStack();
+        } catch (error) {
+          console.error("Error loading videos:", error);
+          videoStack.innerHTML = '<p style="text-align: center; color: var(--accent-color);">Error loading videos.</p>';
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadBlogs();
+        loadPianoVideos();
+      });
+    </script>
 </body>
+
 </html>
